@@ -34,15 +34,9 @@ const sectionPresentationOverride = z.object({
 	heading: overrideTextPresentation.optional(),
 	body: overrideTextPresentation.optional(),
 }).strict();
-const sitePresentation = z.object({
-	default: z.object({
-		heading: defaultTextPresentation,
-		body: defaultTextPresentation,
-	}).strict(),
-	sections: z.record(
-		z.string().regex(/^[a-z0-9-]+$/),
-		sectionPresentationOverride,
-	).optional().default({}),
+const defaultPresentation = z.object({
+	heading: defaultTextPresentation,
+	body: defaultTextPresentation,
 }).strict();
 
 const galleryImage = z.object({
@@ -55,28 +49,14 @@ const siteSchema = z.object({
 	title: z.string(),
 	description: z.string(),
 	copyrightOwner: z.string().min(1),
-	presentation: sitePresentation.optional(),
+	defaultPresentation: defaultPresentation.optional(),
 	sections: z.array(
 		z.object({
 			id: z.string().regex(/^[a-z0-9-]+$/),
+			presentation: sectionPresentationOverride.optional(),
 			gallery: z.array(galleryImage).optional().default([]),
 		}).strict(),
 	).min(1),
-}).superRefine((data, context) => {
-	const sectionIds = new Set(data.sections.map((section) => section.id));
-	const presentationSections = data.presentation?.sections ?? {};
-
-	for (const sectionId of Object.keys(presentationSections)) {
-		if (sectionIds.has(sectionId)) {
-			continue;
-		}
-
-		context.addIssue({
-			code: z.ZodIssueCode.custom,
-			path: ['presentation', 'sections', sectionId],
-			message: `Presentation override uses unknown section id "${sectionId}".`,
-		});
-	}
 });
 
 const site = defineCollection({

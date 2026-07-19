@@ -1,7 +1,7 @@
 {
   "name": "@janga/cli-gallery",
   "type": "module",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "bin": {
     "cli-gallery": "./bin/cli-gallery.mjs"
   },

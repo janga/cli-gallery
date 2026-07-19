@@ -122,7 +122,7 @@ npm run dev:local
 ```
 
 The starter depends on `@janga/cli-gallery` through the GitHub tag
-`v0.1.5` over HTTPS. Commit the generated `package-lock.json` in the site
+`v0.1.6` over HTTPS. Commit the generated `package-lock.json` in the site
 repository so local builds and GitHub Actions use the same package version.
 
 ## Project Files
@@ -394,20 +394,20 @@ The file uses frontmatter for site-wide data and section configuration:
 
 ```yaml
 copyrightOwner: Example Artist
-presentation:
-  default:
-    heading:
-      align:
-        desktop: center
-        mobile: center
-      size: medium
-    body:
-      align:
-        desktop: center
-        mobile: left
-      size: medium
-  sections:
-    work:
+defaultPresentation:
+  heading:
+    align:
+      desktop: center
+      mobile: center
+    size: medium
+  body:
+    align:
+      desktop: center
+      mobile: left
+    size: medium
+sections:
+  - id: work
+    presentation:
       heading:
         align:
           desktop: left
@@ -417,8 +417,6 @@ presentation:
         align:
           desktop: left
           mobile: left
-sections:
-  - id: work
     gallery:
       - image: example-work.jpg
         alt: Descriptive alt text.
@@ -430,10 +428,9 @@ Each `sections` entry defines a public section and its optional gallery. The
 `id` is the stable technical key used for navigation anchors, image directories,
 and Markdown heading ids.
 
-`presentation.default` defines heading and running-text defaults for every
-section. `presentation.sections` is keyed by section id and contains only the
-per-section values that differ from the default. Section presentation keys are
-validated against `sections[].id`.
+`defaultPresentation` defines heading and running-text defaults for every
+section. `sections[].presentation` contains only the values that differ for that
+specific section.
 
 Alignment values are validated as `left`, `center`, or `right`. Size values are
 validated as `small`, `medium`, `large`, or `xlarge`; the engine maps those names to
@@ -443,21 +440,20 @@ or both. Defaults must specify both breakpoints.
 The default values that match the original CSS are:
 
 ```yaml
-presentation:
-  default:
-    heading:
-      align:
-        desktop: center
-        mobile: center
-      size: medium
-    body:
-      align:
-        desktop: center
-        mobile: left
-      size: medium
+defaultPresentation:
+  heading:
+    align:
+      desktop: center
+      mobile: center
+    size: medium
+  body:
+    align:
+      desktop: center
+      mobile: left
+    size: medium
 ```
 
-For backward compatibility, sites without `presentation` still use the original
+Sites without `defaultPresentation` still use the original
 engine defaults: the first section heading is rendered with the large heading
 size, later section headings use medium, and body text uses medium.
 Centered heading and body text use the engine's narrower text widths. Left- or

@@ -2,24 +2,22 @@
 title: Example Gallery
 description: Minimal cli-gallery starter site.
 copyrightOwner: Example Artist
-presentation:
-  default:
-    heading:
-      align:
-        desktop: center
-        mobile: center
-      size: medium
-    body:
-      align:
-        desktop: center
-        mobile: left
-      size: medium
-  sections:
-    intro:
-      heading:
-        size: large
+defaultPresentation:
+  heading:
+    align:
+      desktop: center
+      mobile: center
+    size: medium
+  body:
+    align:
+      desktop: center
+      mobile: left
+    size: medium
 sections:
   - id: intro
+    presentation:
+      heading:
+        size: large
     gallery: []
   - id: work
     gallery: []

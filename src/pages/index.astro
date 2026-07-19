@@ -25,7 +25,7 @@ const resolvedSections = getSectionsContent(siteHtml, sections);
 		{resolvedSections.map((section, index) => (
 			<SiteSection
 				section={section}
-				presentation={site.data.presentation}
+				defaultPresentation={site.data.defaultPresentation}
 				headingLevel={index === 0 ? 1 : 2}
 				priorityGalleryImage={index === 0}
 			/>

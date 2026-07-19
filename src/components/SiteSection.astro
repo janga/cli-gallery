@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import GalleryGrid from './GalleryGrid.astro';
 
 type SiteSection = CollectionEntry<'site'>['data']['sections'][number];
-type SitePresentation = CollectionEntry<'site'>['data']['presentation'];
+type SiteDefaultPresentation = CollectionEntry<'site'>['data']['defaultPresentation'];
 type ResolvedSection = SiteSection & { title: string; contentHtml: string };
 type ResponsiveValue<T> = { desktop: T; mobile: T };
 type ResponsiveOverride<T> = { desktop?: T; mobile?: T };
@@ -20,12 +20,12 @@ type OverrideTextPresentation = {
 
 interface Props {
 	section: ResolvedSection;
-	presentation?: SitePresentation;
+	defaultPresentation?: SiteDefaultPresentation;
 	headingLevel: 1 | 2;
 	priorityGalleryImage?: boolean;
 }
 
-const { section, presentation, headingLevel, priorityGalleryImage = false } = Astro.props;
+const { section, defaultPresentation: configuredDefaultPresentation, headingLevel, priorityGalleryImage = false } = Astro.props;
 const HeadingTag = headingLevel === 1 ? 'h1' : 'h2';
 const headingSizeValues: Record<TextSize, ResponsiveValue<string>> = {
 	small: {
@@ -64,25 +64,22 @@ const bodySizeValues: Record<TextSize, ResponsiveValue<string>> = {
 	},
 };
 const fallbackPresentation = {
-	default: {
-		heading: {
-			align: {
-				desktop: 'center',
-				mobile: 'center',
-			},
-			size: headingLevel === 1 ? 'large' : 'medium',
+	heading: {
+		align: {
+			desktop: 'center',
+			mobile: 'center',
 		},
-		body: {
-			align: {
-				desktop: 'center',
-				mobile: 'left',
-			},
-			size: 'medium',
-		},
+		size: headingLevel === 1 ? 'large' : 'medium',
 	},
-	sections: {},
-} satisfies { default: { heading: DefaultTextPresentation; body: DefaultTextPresentation }; sections: Record<string, never> };
-const sectionOverride = presentation?.sections?.[section.id] as {
+	body: {
+		align: {
+			desktop: 'center',
+			mobile: 'left',
+		},
+		size: 'medium',
+	},
+} satisfies { heading: DefaultTextPresentation; body: DefaultTextPresentation };
+const sectionOverride = section.presentation as {
 	heading?: OverrideTextPresentation;
 	body?: OverrideTextPresentation;
 } | undefined;
@@ -97,7 +94,7 @@ const getSizeValue = (
 	sizeValues: Record<TextSize, ResponsiveValue<string>>,
 	size: TextSize,
 ) => sizeValues[size];
-const defaultPresentation = presentation?.default ?? fallbackPresentation.default;
+const defaultPresentation = configuredDefaultPresentation ?? fallbackPresentation;
 const headingAlign = getResponsiveValue(defaultPresentation.heading.align, sectionOverride?.heading?.align);
 const headingFontSize = getSizeValue(
 	headingSizeValues,
