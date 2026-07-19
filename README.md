@@ -122,7 +122,7 @@ npm run dev:local
 ```
 
 The starter depends on `@janga/cli-gallery` through the GitHub tag
-`v0.1.6` over HTTPS. Commit the generated `package-lock.json` in the site
+`v0.1.7` over HTTPS. Commit the generated `package-lock.json` in the site
 repository so local builds and GitHub Actions use the same package version.
 
 ## Project Files
@@ -558,6 +558,11 @@ when the source image is large enough. The pipeline also creates a largest
 variant matching the source width when it is larger than the standard display
 widths.
 
+Generated WebP filenames include a short hash of the source image, for example
+`example-work-1a2b3c4d-1440.webp`. When a source image changes, its generated
+image URLs change too, which avoids stale browser, CDN, or GitHub Actions cache
+entries at the old URL.
+
 `site:public` copies files from the selected site directory's `public/`
 subdirectory into `site/.cli-gallery/public/` before the static build. Files in
 the site `public/` directory are source files and should be version-controlled;
@@ -567,8 +572,8 @@ output.
 GitHub Actions caches `site/.cli-gallery/public/images/generated/` between
 deploys. With a cache hit and a current
 `site/.cli-gallery/generated-images.json`, GitHub can reuse generated WebP
-variants; with a cache miss, it rebuilds them from source images under the
-selected site `images/` directory.
+variants; with a cache miss or a changed source-image hash, it rebuilds them
+from source images under the selected site `images/` directory.
 
 ## Image Metadata
 
