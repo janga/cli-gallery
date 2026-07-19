@@ -2,6 +2,7 @@ import { cp, mkdir, readdir, rm } from 'node:fs/promises';
 import path from 'node:path';
 import {
 	astroPublicDir,
+	astroPublicLabel,
 	sitePublicDir,
 	sitePublicLabel,
 } from './lib/site-paths.mjs';
@@ -38,4 +39,4 @@ for (const entry of await readDirectory(sitePublicDir)) {
 	);
 }
 
-console.log(`Synced ${sitePublicLabel}/ to public/.`);
+console.log(`Synced ${sitePublicLabel}/ to ${astroPublicLabel}/.`);

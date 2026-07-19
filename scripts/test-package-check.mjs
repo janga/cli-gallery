@@ -83,6 +83,20 @@ const assertFileExists = async (filePath) => {
 	}
 };
 
+const assertFileMissing = async (filePath) => {
+	try {
+		await readFile(filePath);
+	} catch (error) {
+		if (error?.code === 'ENOENT') {
+			return;
+		}
+
+		throw error;
+	}
+
+	throw new Error(`Unexpected file exists: ${filePath}.`);
+};
+
 try {
 	await mkdir(packDir, { recursive: true });
 	const packResult = await run(npmBin, ['pack', '--pack-destination', packDir], {
@@ -105,6 +119,7 @@ try {
 		assertFileExists(path.join(packagedStarterRoot, 'site', 'config.mjs')),
 		assertFileExists(path.join(packagedStarterRoot, 'site', 'content.md')),
 		assertFileExists(path.join(packagedStarterRoot, 'site', 'images', 'work', '.gitkeep')),
+		assertFileExists(path.join(packagedStarterRoot, 'site', 'public', 'robots.txt')),
 	]);
 	await cp(packagedStarterRoot, siteProjectRoot, {
 		recursive: true,
@@ -120,6 +135,9 @@ try {
 	await runInherit(npxBin, ['cli-gallery', 'config:check'], { cwd: path.join(siteProjectRoot, 'site', 'images', 'work'), env: npmEnv });
 	await runInherit(npxBin, ['cli-gallery', 'content:check'], { cwd: siteProjectRoot, env: npmEnv });
 	await runInherit(npxBin, ['cli-gallery', 'build'], { cwd: siteProjectRoot, env: npmEnv });
+	await assertFileExists(path.join(siteProjectRoot, 'site', '.cli-gallery', 'public', 'robots.txt'));
+	await assertFileExists(path.join(siteProjectRoot, 'dist', 'robots.txt'));
+	await assertFileMissing(path.join(siteProjectRoot, 'public', 'robots.txt'));
 
 	console.log('Package check passed.');
 } finally {

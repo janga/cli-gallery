@@ -26,8 +26,8 @@ maintainer, put it in `README.md` instead of duplicating it here.
   text, and captions in the selected site `content.md`; the default path is
   `site/content.md`. Use `fixtures/basic/site` for standalone engine checks.
 - Keep site-specific static files in the selected site `public/`; the default
-  path is `site/public/`. Root `public/` is copied build
-  preparation output plus generated image output.
+  path is `site/public/`. The selected site's `.cli-gallery/public/` directory
+  is copied build preparation output plus generated image output.
 - Do not add routes or split sections into separate Markdown files unless the
   user explicitly changes the single-page architecture.
 
@@ -46,7 +46,7 @@ maintainer, put it in `README.md` instead of duplicating it here.
   metadata, or when build warnings identify missing metadata that should be
   written intentionally.
 - Run `npm run site:public` after changing `site/public/` when you need the
-  local root `public/` copy without a full build.
+  local generated public copy without a full build.
 - Run `npm run test:site-public` after changing static-public sync behavior.
 - Run `npm run test:fixture:build` after changing package/site-root behavior
   that should work against the minimal fixture.

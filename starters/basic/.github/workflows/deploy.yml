@@ -34,7 +34,7 @@ jobs:
       - name: Restore generated images
         uses: actions/cache@v4
         with:
-          path: public/images/generated
+          path: site/.cli-gallery/public/images/generated
           key: cli-gallery-images-${{ hashFiles('site/.cli-gallery/generated-images.json') }}
           restore-keys: |
             cli-gallery-images-

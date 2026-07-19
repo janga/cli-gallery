@@ -122,7 +122,7 @@ npm run dev:local
 ```
 
 The starter depends on `@janga/cli-gallery` through the GitHub tag
-`v0.1.2` over HTTPS. Commit the generated `package-lock.json` in the site
+`v0.1.3` over HTTPS. Commit the generated `package-lock.json` in the site
 repository so local builds and GitHub Actions use the same package version.
 
 ## Project Files
@@ -492,11 +492,12 @@ The build chain runs:
 4. `npm run images`
 5. Astro build with this package's `astro.config.mjs` and `src/`
 
-The image pipeline generates WebP variants in `public/images/generated/`.
-That directory is build output and is not version-controlled. The generated
-site image manifest, `site/.cli-gallery/generated-images.json`, stores hashes
-for source images and generated variant paths so unchanged images can reuse
-existing WebP variants.
+The image pipeline generates WebP variants in
+`site/.cli-gallery/public/images/generated/`. That directory is local build
+preparation output and is not version-controlled. The generated site image
+manifest, `site/.cli-gallery/generated-images.json`, stores hashes for source
+images and generated variant paths so unchanged images can reuse existing WebP
+variants.
 
 The normal generated display widths are 480, 768, 1080, 1440, and 1920 pixels
 when the source image is large enough. The pipeline also creates a largest
@@ -504,15 +505,16 @@ variant matching the source width when it is larger than the standard display
 widths.
 
 `site:public` copies files from the selected site directory's `public/`
-subdirectory into Astro's root `public/` directory before the static build.
-Files in the site `public/` directory are source files and should be
-version-controlled; copied files under root `public/` are build preparation
+subdirectory into `site/.cli-gallery/public/` before the static build. Files in
+the site `public/` directory are source files and should be version-controlled;
+copied files under `site/.cli-gallery/public/` are generated build preparation
 output.
 
-GitHub Actions caches `public/images/generated/` between deploys. With a cache
-hit and a current `site/.cli-gallery/generated-images.json`, GitHub can reuse
-generated WebP variants; with a cache miss, it rebuilds them from source images
-under the selected site `images/` directory.
+GitHub Actions caches `site/.cli-gallery/public/images/generated/` between
+deploys. With a cache hit and a current
+`site/.cli-gallery/generated-images.json`, GitHub can reuse generated WebP
+variants; with a cache miss, it rebuilds them from source images under the
+selected site `images/` directory.
 
 ## Image Metadata
 
@@ -661,8 +663,8 @@ npm run test:site-public
 ```
 
 This verifies that `site:public` copies static files from the selected site
-directory into root `public/`, removes stale root-public files, and keeps
-generated image output under `public/images/`.
+directory into `site/.cli-gallery/public/`, removes stale copied files, and
+keeps generated image output under `site/.cli-gallery/public/images/`.
 
 ### Gallery Rows Moved Between Sections
 
@@ -809,6 +811,7 @@ site/                               # Local dog-gallery demo for this repo
 |-- config.mjs                      # Demo technical project config
 |-- content.md                      # Demo sections, captions, and image refs
 |-- .cli-gallery/generated-images.json # Demo generated image manifest
+|-- .cli-gallery/public/            # Demo generated publicDir, not version-controlled
 |-- images/dogs/                    # Demo source images
 `-- public/                         # Demo static public files
 starters/basic/                     # Copyable starter for new site repos
@@ -816,8 +819,6 @@ starters/basic/                     # Copyable starter for new site repos
 |-- package.json                    # Site package depending on cli-gallery
 `-- site/                           # Starter site files
 fixtures/basic/site/                # Minimal fixture for engine checks
-public/
-`-- images/generated/               # Generated WebP variants, not version-controlled
 src/
 |-- layouts/BaseLayout.astro        # Shared HTML shell and metadata
 |-- pages/index.astro               # Renders the single page from configured content.md
