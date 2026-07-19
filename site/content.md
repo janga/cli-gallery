@@ -2,22 +2,24 @@
 title: Local Dog Gallery
 description: A small cli-gallery example with free dog images.
 copyrightOwner: Wikimedia Commons contributors
-sections:
-  - id: dogs
+presentation:
+  default:
     heading:
       align:
-        desktop: center
-        mobile: center
-      fontSize:
-        desktop: "clamp(1.65rem, 4.6vw, 5.65rem)"
-        mobile: "clamp(1.9rem, 8vw, 3.2rem)"
+        desktop: left
+        mobile: left
+      size: xlarge
     body:
       align:
-        desktop: center
+        desktop: left
         mobile: left
-      fontSize:
-        desktop: "clamp(1rem, 0.96rem + 0.18vw, 1.125rem)"
-        mobile: "clamp(1rem, 0.96rem + 0.18vw, 1.125rem)"
+      size: medium
+  sections:
+    dogs:
+      heading:
+        size: large
+sections:
+  - id: dogs
     gallery:
       - image: photo-of-a-dog.jpg
         alt: "A black dog sitting outdoors and looking at the camera."

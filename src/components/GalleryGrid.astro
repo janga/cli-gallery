@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { getImageAttributes, getLinkedImageSrc } from '../lib/generatedImages';
+import { getGeneratedImage, getImageAttributes, getLinkedImageSrc } from '../lib/generatedImages';
 
 type SiteSection = CollectionEntry<'site'>['data']['sections'][number];
 type GalleryImage = SiteSection['gallery'][number];
@@ -18,6 +18,10 @@ const galleryImageSizes = '(max-width: 700px) calc(100vw - 2rem), 880px';
 <div class="gallery" aria-label={`Galleri: ${title}`}>
 	{images.map((image, index) => {
 		const isPriority = priorityFirstImage && index === 0;
+		const generatedImage = getGeneratedImage(image.image);
+		const imageClass = generatedImage && generatedImage.width > generatedImage.height
+			? 'gallery-image-landscape'
+			: undefined;
 
 		return (
 		<article class="gallery-item">
@@ -27,6 +31,7 @@ const galleryImageSizes = '(max-width: 700px) calc(100vw - 2rem), 880px';
 			>
 				<img
 					{...getImageAttributes(image.image, galleryImageSizes)}
+					class:list={[imageClass]}
 					alt={image.alt}
 					decoding="async"
 					fetchpriority={isPriority ? 'high' : 'low'}

@@ -122,7 +122,7 @@ npm run dev:local
 ```
 
 The starter depends on `@janga/cli-gallery` through the GitHub tag
-`v0.1.4` over HTTPS. Commit the generated `package-lock.json` in the site
+`v0.1.5` over HTTPS. Commit the generated `package-lock.json` in the site
 repository so local builds and GitHub Actions use the same package version.
 
 ## Project Files
@@ -394,22 +394,31 @@ The file uses frontmatter for site-wide data and section configuration:
 
 ```yaml
 copyrightOwner: Example Artist
-sections:
-  - id: work
+presentation:
+  default:
     heading:
       align:
         desktop: center
         mobile: center
-      fontSize:
-        desktop: "clamp(1.65rem, 4.6vw, 5.65rem)"
-        mobile: "clamp(1.9rem, 8vw, 3.2rem)"
+      size: medium
     body:
       align:
         desktop: center
         mobile: left
-      fontSize:
-        desktop: "clamp(1rem, 0.96rem + 0.18vw, 1.125rem)"
-        mobile: "clamp(1rem, 0.96rem + 0.18vw, 1.125rem)"
+      size: medium
+  sections:
+    work:
+      heading:
+        align:
+          desktop: left
+          mobile: left
+        size: large
+      body:
+        align:
+          desktop: left
+          mobile: left
+sections:
+  - id: work
     gallery:
       - image: example-work.jpg
         alt: Descriptive alt text.
@@ -421,34 +430,40 @@ Each `sections` entry defines a public section and its optional gallery. The
 `id` is the stable technical key used for navigation anchors, image directories,
 and Markdown heading ids.
 
-`heading` and `body` are optional presentation controls for the section heading
-and running Markdown text. When they are present, `align` and `fontSize` must
-define both `desktop` and `mobile` values. Alignment is validated as `left`,
-`center`, or `right`. Font sizes are validated as CSS lengths or `clamp(...)`
-expressions using `rem`, `em`, `px`, `%`, or viewport units.
+`presentation.default` defines heading and running-text defaults for every
+section. `presentation.sections` is keyed by section id and contains only the
+per-section values that differ from the default. Section presentation keys are
+validated against `sections[].id`.
 
-The default first-section heading values match the original CSS:
+Alignment values are validated as `left`, `center`, or `right`. Size values are
+validated as `small`, `medium`, `large`, or `xlarge`; the engine maps those names to
+responsive CSS font sizes. Override alignment can specify `desktop`, `mobile`,
+or both. Defaults must specify both breakpoints.
+
+The default values that match the original CSS are:
 
 ```yaml
-heading:
-  align:
-    desktop: center
-    mobile: center
-  fontSize:
-    desktop: "clamp(1.65rem, 4.6vw, 5.65rem)"
-    mobile: "clamp(1.9rem, 8vw, 3.2rem)"
-body:
-  align:
-    desktop: center
-    mobile: left
-  fontSize:
-    desktop: "clamp(1rem, 0.96rem + 0.18vw, 1.125rem)"
-    mobile: "clamp(1rem, 0.96rem + 0.18vw, 1.125rem)"
+presentation:
+  default:
+    heading:
+      align:
+        desktop: center
+        mobile: center
+      size: medium
+    body:
+      align:
+        desktop: center
+        mobile: left
+      size: medium
 ```
 
-Later section headings default to
-`clamp(1.4rem, 3.1vw, 3.2rem)` on both desktop and mobile. These frontmatter
-fields are validated by Astro's content schema during `dev:local` and `build`.
+For backward compatibility, sites without `presentation` still use the original
+engine defaults: the first section heading is rendered with the large heading
+size, later section headings use medium, and body text uses medium.
+Centered heading and body text use the engine's narrower text widths. Left- or
+right-aligned heading and body text use the same maximum width as gallery
+images, so the text block lines up with image edges on desktop while still
+collapsing to the available viewport width on mobile.
 
 The visible section title is the Markdown heading. Each top-level site section
 must have an explicit heading id matching the frontmatter section id:

@@ -3,65 +3,133 @@ import type { CollectionEntry } from 'astro:content';
 import GalleryGrid from './GalleryGrid.astro';
 
 type SiteSection = CollectionEntry<'site'>['data']['sections'][number];
+type SitePresentation = CollectionEntry<'site'>['data']['presentation'];
 type ResolvedSection = SiteSection & { title: string; contentHtml: string };
 type ResponsiveValue<T> = { desktop: T; mobile: T };
+type ResponsiveOverride<T> = { desktop?: T; mobile?: T };
 type TextAlign = 'left' | 'center' | 'right';
-type TextPresentation = {
-	align?: ResponsiveValue<TextAlign>;
-	fontSize?: ResponsiveValue<string>;
+type TextSize = 'small' | 'medium' | 'large' | 'xlarge';
+type DefaultTextPresentation = {
+	align: ResponsiveValue<TextAlign>;
+	size: TextSize;
+};
+type OverrideTextPresentation = {
+	align?: ResponsiveOverride<TextAlign>;
+	size?: TextSize;
 };
 
 interface Props {
 	section: ResolvedSection;
+	presentation?: SitePresentation;
 	headingLevel: 1 | 2;
 	priorityGalleryImage?: boolean;
 }
 
-const { section, headingLevel, priorityGalleryImage = false } = Astro.props;
+const { section, presentation, headingLevel, priorityGalleryImage = false } = Astro.props;
 const HeadingTag = headingLevel === 1 ? 'h1' : 'h2';
-const defaultHeadingFontSize = headingLevel === 1
-	? {
-		desktop: 'clamp(1.65rem, 4.6vw, 5.65rem)',
-		mobile: 'clamp(1.9rem, 8vw, 3.2rem)',
-	}
-	: {
+const headingSizeValues: Record<TextSize, ResponsiveValue<string>> = {
+	small: {
+		desktop: 'clamp(1.15rem, 2.2vw, 2rem)',
+		mobile: 'clamp(1.15rem, 5vw, 1.8rem)',
+	},
+	medium: {
 		desktop: 'clamp(1.4rem, 3.1vw, 3.2rem)',
 		mobile: 'clamp(1.4rem, 3.1vw, 3.2rem)',
-	};
-const defaultHeadingAlign: ResponsiveValue<TextAlign> = {
-	desktop: 'center',
-	mobile: 'center',
+	},
+	large: {
+		desktop: 'clamp(1.65rem, 4.6vw, 5.65rem)',
+		mobile: 'clamp(1.9rem, 8vw, 3.2rem)',
+	},
+	xlarge: {
+		desktop: 'clamp(2rem, 5.6vw, 7rem)',
+		mobile: 'clamp(2.15rem, 9.4vw, 3.8rem)',
+	},
 };
-const defaultBodyAlign: ResponsiveValue<TextAlign> = {
-	desktop: 'center',
-	mobile: 'left',
+const bodySizeValues: Record<TextSize, ResponsiveValue<string>> = {
+	small: {
+		desktop: 'clamp(0.9rem, 0.86rem + 0.16vw, 1rem)',
+		mobile: 'clamp(0.9rem, 0.86rem + 0.16vw, 1rem)',
+	},
+	medium: {
+		desktop: 'clamp(1rem, 0.96rem + 0.18vw, 1.125rem)',
+		mobile: 'clamp(1rem, 0.96rem + 0.18vw, 1.125rem)',
+	},
+	large: {
+		desktop: 'clamp(1.1rem, 1.04rem + 0.24vw, 1.25rem)',
+		mobile: 'clamp(1.1rem, 1.04rem + 0.24vw, 1.25rem)',
+	},
+	xlarge: {
+		desktop: 'clamp(1.18rem, 1.08rem + 0.36vw, 1.42rem)',
+		mobile: 'clamp(1.18rem, 1.08rem + 0.36vw, 1.42rem)',
+	},
 };
-const defaultBodyFontSize = {
-	desktop: 'clamp(1rem, 0.96rem + 0.18vw, 1.125rem)',
-	mobile: 'clamp(1rem, 0.96rem + 0.18vw, 1.125rem)',
-};
+const fallbackPresentation = {
+	default: {
+		heading: {
+			align: {
+				desktop: 'center',
+				mobile: 'center',
+			},
+			size: headingLevel === 1 ? 'large' : 'medium',
+		},
+		body: {
+			align: {
+				desktop: 'center',
+				mobile: 'left',
+			},
+			size: 'medium',
+		},
+	},
+	sections: {},
+} satisfies { default: { heading: DefaultTextPresentation; body: DefaultTextPresentation }; sections: Record<string, never> };
+const sectionOverride = presentation?.sections?.[section.id] as {
+	heading?: OverrideTextPresentation;
+	body?: OverrideTextPresentation;
+} | undefined;
 const getResponsiveValue = <T,>(
-	configured: ResponsiveValue<T> | undefined,
 	defaults: ResponsiveValue<T>,
+	override: ResponsiveOverride<T> | undefined,
 ): ResponsiveValue<T> => ({
-	desktop: configured?.desktop ?? defaults.desktop,
-	mobile: configured?.mobile ?? defaults.mobile,
+	desktop: override?.desktop ?? defaults.desktop,
+	mobile: override?.mobile ?? defaults.mobile,
 });
-const heading = section.heading as TextPresentation | undefined;
-const body = section.body as TextPresentation | undefined;
-const headingAlign = getResponsiveValue(heading?.align, defaultHeadingAlign);
-const headingFontSize = getResponsiveValue(heading?.fontSize, defaultHeadingFontSize);
-const bodyAlign = getResponsiveValue(body?.align, defaultBodyAlign);
-const bodyFontSize = getResponsiveValue(body?.fontSize, defaultBodyFontSize);
+const getSizeValue = (
+	sizeValues: Record<TextSize, ResponsiveValue<string>>,
+	size: TextSize,
+) => sizeValues[size];
+const defaultPresentation = presentation?.default ?? fallbackPresentation.default;
+const headingAlign = getResponsiveValue(defaultPresentation.heading.align, sectionOverride?.heading?.align);
+const headingFontSize = getSizeValue(
+	headingSizeValues,
+	sectionOverride?.heading?.size ?? defaultPresentation.heading.size,
+);
+const bodyAlign = getResponsiveValue(defaultPresentation.body.align, sectionOverride?.body?.align);
+const bodyFontSize = getSizeValue(
+	bodySizeValues,
+	sectionOverride?.body?.size ?? defaultPresentation.body.size,
+);
+const getAlignedTextWidth = (
+	align: ResponsiveValue<TextAlign>,
+	centeredWidth: string,
+): ResponsiveValue<string> => ({
+	desktop: align.desktop === 'center' ? centeredWidth : 'var(--gallery-width)',
+	mobile: align.mobile === 'center' ? centeredWidth : 'var(--gallery-width)',
+});
+const headingWidth = getAlignedTextWidth(headingAlign, '760px');
+const bodyWidth = getAlignedTextWidth(bodyAlign, 'var(--text-width)');
 const sectionStyle = [
 	`--section-heading-align-desktop: ${headingAlign.desktop}`,
 	`--section-heading-align-mobile: ${headingAlign.mobile}`,
 	`--section-heading-font-size-desktop: ${headingFontSize.desktop}`,
 	`--section-heading-font-size-mobile: ${headingFontSize.mobile}`,
+	`--section-heading-width-desktop: ${headingWidth.desktop}`,
+	`--section-heading-width-mobile: ${headingWidth.mobile}`,
 	`--section-body-align-desktop: ${bodyAlign.desktop}`,
 	`--section-body-align-mobile: ${bodyAlign.mobile}`,
 	`--section-body-font-size-desktop: ${bodyFontSize.desktop}`,
 	`--section-body-font-size-mobile: ${bodyFontSize.mobile}`,
+	`--section-body-width-desktop: ${bodyWidth.desktop}`,
+	`--section-body-width-mobile: ${bodyWidth.mobile}`,
 ].join('; ');
 ---
 

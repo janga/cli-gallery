@@ -177,7 +177,17 @@ try {
 		npxBin,
 		['cli-gallery', 'build'],
 		{ cwd: siteProjectRoot, env: npmEnv },
-		'sections.0.heading.align.desktop',
+		'presentation.default.heading.align.desktop',
+	);
+	await writeFile(
+		siteContentPath,
+		siteContent.replace('    intro:\n      heading:', '    missing-section:\n      heading:'),
+	);
+	await runExpectFailure(
+		npxBin,
+		['cli-gallery', 'build'],
+		{ cwd: siteProjectRoot, env: npmEnv },
+		'presentation.sections.missing-section',
 	);
 
 	console.log('Package check passed.');

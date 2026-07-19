@@ -9,25 +9,40 @@ const siteEntryId = `${siteDirLabel
 	.replace(/[^a-zA-Z0-9-]+/g, '-')
 	.replace(/^-+|-+$/g, '') || 'site'}-content`;
 const contentImageName = z.string().regex(/^[a-z0-9][a-z0-9.-]*\.(jpe?g|png)$/i);
-const cssNumber = String.raw`(?:0|[1-9]\d*)(?:\.\d+)?`;
-const cssLength = String.raw`${cssNumber}(?:rem|em|px|vw|vh|vmin|vmax|%)`;
-const cssLengthExpression = String.raw`${cssLength}(?:\s*[+-]\s*${cssLength})?`;
-const cssFontSize = z.string().regex(
-	new RegExp(String.raw`^(?:${cssLength}|clamp\(\s*${cssLengthExpression}\s*,\s*${cssLengthExpression}\s*,\s*${cssLengthExpression}\s*\))$`),
-	'Use a CSS font-size length or clamp(...) expression with rem, em, px, %, or viewport units.',
-);
 const textAlign = z.enum(['left', 'center', 'right']);
-const responsiveTextAlign = z.object({
+const textSize = z.enum(['small', 'medium', 'large', 'xlarge']);
+const defaultResponsiveTextAlign = z.object({
 	desktop: textAlign,
 	mobile: textAlign,
 }).strict();
-const responsiveFontSize = z.object({
-	desktop: cssFontSize,
-	mobile: cssFontSize,
+const overrideResponsiveTextAlign = z.object({
+	desktop: textAlign.optional(),
+	mobile: textAlign.optional(),
+}).strict().refine(
+	(value) => value.desktop !== undefined || value.mobile !== undefined,
+	'Specify desktop, mobile, or both.',
+);
+const defaultTextPresentation = z.object({
+	align: defaultResponsiveTextAlign,
+	size: textSize,
 }).strict();
-const textPresentation = z.object({
-	align: responsiveTextAlign.optional(),
-	fontSize: responsiveFontSize.optional(),
+const overrideTextPresentation = z.object({
+	align: overrideResponsiveTextAlign.optional(),
+	size: textSize.optional(),
+}).strict();
+const sectionPresentationOverride = z.object({
+	heading: overrideTextPresentation.optional(),
+	body: overrideTextPresentation.optional(),
+}).strict();
+const sitePresentation = z.object({
+	default: z.object({
+		heading: defaultTextPresentation,
+		body: defaultTextPresentation,
+	}).strict(),
+	sections: z.record(
+		z.string().regex(/^[a-z0-9-]+$/),
+		sectionPresentationOverride,
+	).optional().default({}),
 }).strict();
 
 const galleryImage = z.object({
@@ -36,25 +51,41 @@ const galleryImage = z.object({
 	caption: z.string().optional(),
 });
 
+const siteSchema = z.object({
+	title: z.string(),
+	description: z.string(),
+	copyrightOwner: z.string().min(1),
+	presentation: sitePresentation.optional(),
+	sections: z.array(
+		z.object({
+			id: z.string().regex(/^[a-z0-9-]+$/),
+			gallery: z.array(galleryImage).optional().default([]),
+		}).strict(),
+	).min(1),
+}).superRefine((data, context) => {
+	const sectionIds = new Set(data.sections.map((section) => section.id));
+	const presentationSections = data.presentation?.sections ?? {};
+
+	for (const sectionId of Object.keys(presentationSections)) {
+		if (sectionIds.has(sectionId)) {
+			continue;
+		}
+
+		context.addIssue({
+			code: z.ZodIssueCode.custom,
+			path: ['presentation', 'sections', sectionId],
+			message: `Presentation override uses unknown section id "${sectionId}".`,
+		});
+	}
+});
+
 const site = defineCollection({
 	loader: glob({
 		pattern: 'content.md',
 		base: pathToFileURL(siteDir),
 		generateId: () => siteEntryId,
 	}),
-	schema: z.object({
-		title: z.string(),
-		description: z.string(),
-		copyrightOwner: z.string().min(1),
-		sections: z.array(
-			z.object({
-				id: z.string().regex(/^[a-z0-9-]+$/),
-				heading: textPresentation.optional(),
-				body: textPresentation.optional(),
-				gallery: z.array(galleryImage).optional().default([]),
-			}).strict(),
-		).min(1),
-	}),
+	schema: siteSchema,
 });
 
 export const collections = { site };

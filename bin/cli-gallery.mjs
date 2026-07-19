@@ -120,6 +120,7 @@ try {
 		await runScript('scripts/check-config.mjs', rest);
 	} else if (command === 'content:check') {
 		await runScript('scripts/sync-content-sections.mjs', ['--check', ...rest]);
+		await runAstroInherit(['sync']);
 	} else if (command === 'content:sync') {
 		await runScript('scripts/sync-content-sections.mjs', ['--write', ...rest]);
 	} else if (command === 'metadata:fix') {
