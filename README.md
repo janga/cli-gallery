@@ -122,7 +122,7 @@ npm run dev:local
 ```
 
 The starter depends on `@janga/cli-gallery` through the GitHub tag
-`v0.1.1` over HTTPS. Commit the generated `package-lock.json` in the site
+`v0.1.2` over HTTPS. Commit the generated `package-lock.json` in the site
 repository so local builds and GitHub Actions use the same package version.
 
 ## Project Files

@@ -11,12 +11,14 @@ const astroPackagePath = require.resolve('astro/package.json');
 const astroPackage = require(astroPackagePath);
 
 export const astroBinPath = path.join(path.dirname(astroPackagePath), astroPackage.bin.astro);
-export const astroConfigPath = 'astro.config.mjs';
+export const astroConfigPath = path.relative(siteProjectRoot, path.join(engineRoot, 'astro.config.mjs'))
+	.split(path.sep)
+	.join('/');
 
 export const getAstroArgs = (args) => [
 	astroBinPath,
 	'--root',
-	engineRoot,
+	siteProjectRoot,
 	'--config',
 	astroConfigPath,
 	...args,
