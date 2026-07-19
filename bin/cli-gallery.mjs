@@ -1,0 +1,154 @@
+#!/usr/bin/env node
+import path from 'node:path';
+
+const args = process.argv.slice(2);
+process.env.CLI_GALLERY_INVOCATION_ROOT ??= process.cwd();
+
+const usage = `
+Usage: cli-gallery <command> [options]
+
+Commands:
+  dev:local              Start local Astro dev server
+  dev:restart            Restart local Astro dev server
+  dev:status             Show local dev server status
+  dev:logs               Show local dev server logs
+  dev:stop               Stop local dev server
+  config:check           Validate site/config.mjs
+  content:check          Validate site/content.md and gallery references
+  content:sync           Rewrite section order and move misplaced images
+  metadata:fix           Write missing copyright metadata to source images
+  site:public            Sync site/public/ to public/
+  images                 Generate optimized image variants
+  build                  Build the selected site
+  build:local            Build and restart local dev server
+  deploy                 Build and deploy committed branch
+  deploy:commit          Build, commit allowed changes, push, and check Pages
+  deploy:watch           Watch GitHub Pages workflow
+  preview                Preview dist/
+  astro                  Run Astro with cli-gallery config
+  doctor                 Print resolved paths
+
+Global options:
+  --site-dir <path>      Use a specific site source directory
+  -h, --help             Show this help
+`.trim();
+
+const parseArgs = (rawArgs) => {
+	const commandArgs = [];
+	let siteDir = null;
+
+	for (let index = 0; index < rawArgs.length; index += 1) {
+		const arg = rawArgs[index];
+
+		if (arg === '--site-dir') {
+			const value = rawArgs[index + 1];
+			if (!value || value.startsWith('-')) {
+				throw new Error('--site-dir requires a path.');
+			}
+
+			siteDir = value;
+			index += 1;
+			continue;
+		}
+
+		if (arg.startsWith('--site-dir=')) {
+			siteDir = arg.slice('--site-dir='.length);
+			if (!siteDir) {
+				throw new Error('--site-dir requires a path.');
+			}
+			continue;
+		}
+
+		commandArgs.push(arg);
+	}
+
+	return { commandArgs, siteDir };
+};
+
+let parsedArgs;
+
+try {
+	parsedArgs = parseArgs(args);
+} catch (error) {
+	console.error(error instanceof Error ? error.message : String(error));
+	process.exit(1);
+}
+
+const { commandArgs, siteDir } = parsedArgs;
+
+if (siteDir) {
+	process.env.CLI_GALLERY_SITE_DIR = siteDir;
+}
+
+const [command = 'help', ...rest] = commandArgs;
+
+if (command === '-h' || command === '--help' || command === 'help') {
+	console.log(usage);
+	process.exit(0);
+}
+
+const [
+	{ runAstroInherit },
+	{ engineRoot, siteProjectRoot },
+	{ runInherit },
+] = await Promise.all([
+	import('../scripts/lib/astro-command.mjs'),
+	import('../scripts/lib/site-paths.mjs'),
+	import('../scripts/lib/run-command.mjs'),
+]);
+
+const runScript = (relativePath, scriptArgs = []) => runInherit(
+	process.execPath,
+	[path.join(engineRoot, relativePath), ...scriptArgs],
+	{ cwd: siteProjectRoot },
+);
+
+const runBuild = () => runScript('scripts/build-site.mjs');
+
+try {
+	if (command === 'dev' || command === 'dev:local') {
+		await runScript('scripts/dev-local.mjs', rest);
+	} else if (command === 'dev:restart') {
+		await runScript('scripts/dev-local.mjs', ['restart', ...rest]);
+	} else if (command === 'dev:status') {
+		await runScript('scripts/dev-local.mjs', ['status', ...rest]);
+	} else if (command === 'dev:logs') {
+		await runScript('scripts/dev-local.mjs', ['logs', ...rest]);
+	} else if (command === 'dev:stop') {
+		await runScript('scripts/dev-local.mjs', ['stop', ...rest]);
+	} else if (command === 'config:check') {
+		await runScript('scripts/check-config.mjs', rest);
+	} else if (command === 'content:check') {
+		await runScript('scripts/sync-content-sections.mjs', ['--check', ...rest]);
+	} else if (command === 'content:sync') {
+		await runScript('scripts/sync-content-sections.mjs', ['--write', ...rest]);
+	} else if (command === 'metadata:fix') {
+		await runScript('scripts/fix-image-metadata.mjs', rest);
+	} else if (command === 'site:public') {
+		await runScript('scripts/sync-site-public.mjs', rest);
+	} else if (command === 'images') {
+		await runScript('scripts/generate-images.mjs', rest);
+	} else if (command === 'build') {
+		await runBuild();
+	} else if (command === 'build:local') {
+		await runBuild();
+		await runScript('scripts/dev-local.mjs', ['restart']);
+	} else if (command === 'deploy') {
+		await runScript('scripts/deploy-site.mjs', rest);
+	} else if (command === 'deploy:commit') {
+		await runScript('scripts/deploy-site.mjs', ['commit', ...rest]);
+	} else if (command === 'deploy:watch') {
+		await runScript('scripts/watch-pages-deploy.mjs', rest);
+	} else if (command === 'doctor') {
+		await runScript('scripts/doctor.mjs', rest);
+	} else if (command === 'astro') {
+		await runAstroInherit(rest);
+	} else if (command === 'preview') {
+		await runAstroInherit(['preview', ...rest]);
+	} else {
+		throw new Error(`Unknown command: ${command}\n${usage}`);
+	}
+} catch (error) {
+	console.error(error instanceof Error ? error.message : String(error));
+	process.exit(1);
+}

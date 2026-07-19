@@ -328,19 +328,26 @@ const removeUnreferencedGeneratedFiles = async (manifest) => {
 	}
 };
 
-const imageMagick = await getImageMagick();
-const exifTool = await getExifTool();
-
-if (projectConfig.images.warnOnMissingCopyrightMetadata && !exifTool) {
-	console.warn(`Warning: exiftool is missing, so source image copyright metadata was not checked. Install exiftool to enable build-time warnings, or run npm run metadata:fix when you intentionally want to write metadata to source images.`);
-}
-
 await rm(originalImagesDir, { recursive: true, force: true });
 await mkdir(generatedImagesDir, { recursive: true });
 
 const sources = await getReferencedSources();
 const previousManifest = await readManifest();
 const manifest = {};
+
+if (sources.length === 0) {
+	await removeUnreferencedGeneratedFiles(manifest);
+	await mkdir(path.dirname(generatedImagesManifestPath), { recursive: true });
+	await writeFile(generatedImagesManifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+	process.exit(0);
+}
+
+const imageMagick = await getImageMagick();
+const exifTool = await getExifTool();
+
+if (projectConfig.images.warnOnMissingCopyrightMetadata && !exifTool) {
+	console.warn(`Warning: exiftool is missing, so source image copyright metadata was not checked. Install exiftool to enable build-time warnings, or run npm run metadata:fix when you intentionally want to write metadata to source images.`);
+}
 
 for (const sourcePath of sources) {
 	const imageName = path.basename(sourcePath);

@@ -14,8 +14,8 @@ maintainer, put it in `README.md` instead of duplicating it here.
 - Before committing, run `git status --short` and make sure untracked files are
   intentional.
 - Commit before pushing.
-- After pushing to `main`, run `npm run deploy:watch` to monitor the GitHub
-  Pages workflow for the current local commit.
+- Do not run `npm run deploy:watch` in this engine repository unless the user
+  explicitly asks for it. Deploy monitoring is for site repositories.
 - Keep technical project settings in `site/config.mjs`; do not hardcode the
   public URL, GitHub repo, deploy branch, Pages workflow name, footer text,
   smooth-scroll timing, or image metadata policy in scripts or components.
@@ -24,7 +24,7 @@ maintainer, put it in `README.md` instead of duplicating it here.
   hardcoding site paths in scripts.
 - Keep editable content, section definitions, image references, gallery alt
   text, and captions in the selected site `content.md`; the default path is
-  `site/content.md`. Use `examples/basic/site` for standalone engine checks.
+  `site/content.md`. Use `fixtures/basic/site` for standalone engine checks.
 - Keep site-specific static files in the selected site `public/`; the default
   path is `site/public/`. Root `public/` is copied build
   preparation output plus generated image output.
@@ -48,6 +48,10 @@ maintainer, put it in `README.md` instead of duplicating it here.
 - Run `npm run site:public` after changing `site/public/` when you need the
   local root `public/` copy without a full build.
 - Run `npm run test:site-public` after changing static-public sync behavior.
+- Run `npm run test:fixture:build` after changing package/site-root behavior
+  that should work against the minimal fixture.
+- Run `npm run package:check` after changing package files, CLI dispatch,
+  Astro path resolution, or starter structure.
 - Run `npm run build` after content, layout, config, or image-pipeline changes.
 - Run `npm run build:local` when a local preview may be using stale content and
   should be rebuilt and restarted.

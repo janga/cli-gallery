@@ -81,7 +81,13 @@ export const getBodySections = (body) => {
 };
 
 export const getImageFiles = async (directory) => {
-	const entries = await readdir(directory, { withFileTypes: true });
+	const entries = await readdir(directory, { withFileTypes: true }).catch((error) => {
+		if (error?.code === 'ENOENT') {
+			return [];
+		}
+
+		throw error;
+	});
 	const files = [];
 
 	for (const entry of entries) {

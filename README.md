@@ -8,9 +8,10 @@ The tool is designed for single-page gallery sites where content should stay in
 plain files, images should be validated before publishing, and deployment should
 be repeatable from the command line.
 
-This repository contains the reusable `cli-gallery` project model, Astro
-renderer, validation scripts, image pipeline, and deploy helpers. Site
-repositories should keep their own local notes separately.
+This repository contains the reusable `@janga/cli-gallery` package: the CLI,
+Astro renderer, validation scripts, image pipeline, starter project, fixtures,
+and deploy helpers. Published sites should live in their own repositories and
+depend on a pinned version of this package.
 
 ## Use Cases
 
@@ -31,7 +32,7 @@ features.
 
 The core model is file-driven:
 
-1. Configure the site in `site/config.mjs`.
+1. Configure a site in `site/config.mjs`.
 2. Define sections, text, gallery image references, alt text, and captions in
    `site/content.md`.
 3. Store source images under `site/images/<section-id>/`.
@@ -50,8 +51,10 @@ site/config.mjs
 site/content.md
 ```
 
-`site/` is the default site source directory. Set `CLI_GALLERY_SITE_DIR` to use
-another directory with the same internal structure.
+`site/` is the default site source directory. Set `CLI_GALLERY_SITE_DIR` or pass
+`cli-gallery --site-dir <path> ...` to use another directory with the same
+internal structure. When a command is started from a subdirectory, `cli-gallery`
+walks upward until it finds the selected site directory.
 
 `site/config.mjs` holds technical project configuration such as public URL,
 navigation behavior, footer rendering, image metadata policy, GitHub repository,
@@ -81,33 +84,58 @@ Framework-level Astro references:
 
 ## Quick Start
 
+### Engine Development
+
 Install dependencies:
 
 ```sh
 npm install
 ```
 
-Start a local preview for the bundled example site:
+Start a local preview for the demo site in this repository:
 
 ```sh
-CLI_GALLERY_SITE_DIR=examples/basic/site npm run dev:local
+npm run dev:local
 ```
 
-Run a full build against the bundled example site:
+Run the main engine checks:
 
 ```sh
-CLI_GALLERY_SITE_DIR=examples/basic/site npm run build
+npm run test:fixture:build
+npm run package:check
 ```
+
+`npm run package:check` packs this repository, installs the package into a
+temporary starter-based site project, runs commands from both the site root and
+a site subdirectory, and builds the site through the installed `cli-gallery`
+binary.
+
+### New Site Repository
+
+Copy `starters/basic/` into a new repository, then install dependencies:
+
+```sh
+cp -R starters/basic ../my-gallery
+cd ../my-gallery
+npm install
+npm run dev:local
+```
+
+The starter depends on `@janga/cli-gallery` through the GitHub tag
+`v0.1.0`. Commit the generated `package-lock.json` in the site repository so
+local builds and GitHub Actions use the same package version.
 
 ## Project Files
 
 The main files and directories in this repository are:
 
-- `src/`: Astro layout, page rendering, styles, and generated image manifest.
+- `bin/cli-gallery.mjs`: command dispatcher exposed as `cli-gallery`.
+- `src/`: Astro layout, page rendering, styles, and content integration.
 - `scripts/`: command-line validation, image, local preview, and deploy tools.
 - `tests/`: Playwright navigation diagnostics.
-- `examples/basic/site/`: minimal example site for engine development and
-  smoke testing.
+- `site/`: local dog gallery demo used by default in this repository.
+- `fixtures/basic/site/`: minimal fixture for engine regression tests.
+- `starters/basic/`: copyable starter for a separate site repository.
 
 A site repository provides the site-specific files:
 
@@ -143,7 +171,7 @@ requirement only applies when building on your machine.
 
 ## Recommended Workflow
 
-For ordinary content, layout, or image work, use this flow:
+For ordinary content, layout, or image work in a site repository, use this flow:
 
 | Step | What to do | How to do it |
 | --- | --- | --- |
@@ -175,6 +203,16 @@ npm run deploy:watch
 
 `npm run deploy` runs `npm run build` before it pushes, so the manual build
 step is for local confidence rather than a technical requirement.
+
+For engine work in this repository, prefer:
+
+```sh
+npm run test:content-check
+npm run test:site-public
+npm run test:fixture:build
+npm run demo:build
+npm run package:check
+```
 
 ## Local Preview
 
@@ -209,15 +247,19 @@ Keep technical project configuration in `site/config.mjs`, not in
 reusable starter or engine repository.
 
 The site source directory defaults to `site/`. To run the same code against a
-different site directory, set `CLI_GALLERY_SITE_DIR` for the command:
+different site directory, set `CLI_GALLERY_SITE_DIR` or pass `--site-dir` before
+the command:
 
 ```sh
 CLI_GALLERY_SITE_DIR=my-site npm run build
+npx cli-gallery --site-dir my-site build
 ```
 
 The selected directory must contain `config.mjs`, `content.md`, optional static
-files under `public/`, and source images under `images/<section-id>/`. Update
-the `CLI_GALLERY_SITE_DIR` value in `.github/workflows/deploy.yml` too if a
+files under `public/`, and source images under `images/<section-id>/`. If a
+command starts below the site repository root, `cli-gallery` walks upward until
+it finds `<site-dir>/config.mjs` and `<site-dir>/content.md`. Update the
+`CLI_GALLERY_SITE_DIR` value in a site repository's deploy workflow too if that
 repository deploys from a directory other than `site/`.
 
 `site/config.mjs` defines:
@@ -234,6 +276,29 @@ repository deploys from a directory other than `site/`.
 - `github.pagesWorkflow`: the GitHub Actions workflow name to monitor.
 - `deploy.watch`: default poll interval, timeout, and recent-run scan limit for
   `npm run deploy:watch`.
+
+## CLI Commands
+
+The `cli-gallery` binary is the stable command surface for site repositories.
+The npm scripts in the starter are thin aliases around these commands.
+
+```sh
+cli-gallery doctor
+cli-gallery dev:local
+cli-gallery config:check
+cli-gallery content:check
+cli-gallery content:sync
+cli-gallery metadata:fix
+cli-gallery site:public
+cli-gallery images
+cli-gallery build
+cli-gallery deploy
+cli-gallery deploy:watch
+```
+
+Use `cli-gallery doctor` to confirm which engine root, site project root, site
+directory, Astro output directories, and generated manifest path a command will
+use.
 
 Validate project configuration without running a full build:
 
@@ -425,7 +490,7 @@ The build chain runs:
 2. `npm run content:check`
 3. `npm run site:public`
 4. `npm run images`
-5. `astro build`
+5. Astro build with this package's `astro.config.mjs` and `src/`
 
 The image pipeline generates WebP variants in `public/images/generated/`.
 That directory is build output and is not version-controlled. The generated
@@ -493,12 +558,18 @@ gallery image opens the largest generated WebP variant.
 
 ## Deploying
 
-Use the deploy script as the primary publishing path after the intended changes
-have already been committed on the configured deploy branch:
+In a site repository, use the deploy script as the primary publishing path after
+the intended changes have already been committed on the configured deploy
+branch:
 
 ```sh
 npm run deploy
 ```
+
+The deploy command is generic package code, but the deploy target is
+site-specific because it reads `github.*`, `deploy.watch`, and `site.url` from
+that site's `site/config.mjs`. The GitHub Pages workflow also belongs in the
+site repository.
 
 The deploy script is intentionally conservative. It:
 
@@ -664,6 +735,9 @@ npm install
 npx playwright install chromium
 ```
 
+For an installed site repository, the npm scripts call `cli-gallery`. The
+commands can also be run directly with `npx cli-gallery ...`.
+
 ### Local Preview
 
 ```sh
@@ -709,15 +783,17 @@ npm run deploy:watch -- --help
 ```sh
 npm run test:content-check
 npm run test:site-public
+npm run test:fixture:build
+npm run package:check
 npm run test:navigation
 npm run test:navigation:stress
 npm run test:navigation:preview
 ```
 
 `test:content-check` is a standalone regression test for `content:check` and
-`content:sync` behavior against temporary fixtures. It is useful when changing
-content validation or image-moving scripts. It is not part of the regular
-build.
+`content:sync` behavior against temporary fixtures. `test:fixture:build` builds
+the committed fixture site. `package:check` verifies that a packed
+`@janga/cli-gallery` package works from a separate starter-based site project.
 
 ## File Map
 
@@ -727,12 +803,19 @@ the reusable project structure.
 ```text
 README.md                          # Reusable project model and workflow
 AGENTS.md                          # Additional instructions for coding agents
-examples/basic/site/              # Minimal example site for engine development
-|-- config.mjs                      # Example technical project config
-|-- content.md                      # Example sections and text
-|-- .cli-gallery/generated-images.json # Site-specific generated image manifest
-|-- images/.gitkeep                 # Placeholder image directory
-`-- public/robots.txt               # Example static public file
+bin/
+`-- cli-gallery.mjs                 # CLI entrypoint for installed site repos
+site/                               # Local dog-gallery demo for this repo
+|-- config.mjs                      # Demo technical project config
+|-- content.md                      # Demo sections, captions, and image refs
+|-- .cli-gallery/generated-images.json # Demo generated image manifest
+|-- images/dogs/                    # Demo source images
+`-- public/                         # Demo static public files
+starters/basic/                     # Copyable starter for new site repos
+|-- .github/workflows/deploy.yml     # Site-owned GitHub Pages workflow
+|-- package.json                    # Site package depending on cli-gallery
+`-- site/                           # Starter site files
+fixtures/basic/site/                # Minimal fixture for engine checks
 public/
 `-- images/generated/               # Generated WebP variants, not version-controlled
 src/
@@ -741,12 +824,15 @@ src/
 |-- styles/global.css               # Layout, sticky navigation, responsive design
 `-- content.config.ts               # Validates configured content.md
 scripts/
+|-- build-site.mjs                  # Build orchestrator used by the CLI
 |-- check-config.mjs                # Project config validation
 |-- deploy-site.mjs                 # Conservative local deploy command
+|-- doctor.mjs                      # Prints resolved engine/site paths
 |-- watch-pages-deploy.mjs          # GitHub Pages workflow monitor
 |-- sync-content-sections.mjs       # Content validation and sync
 |-- sync-site-public.mjs            # Copies configured public/ into Astro public output
 |-- test-content-check.mjs          # Content validation regression tests
+|-- test-package-check.mjs          # Packed-package integration test
 |-- test-site-public.mjs            # Static public file sync regression tests
 |-- generate-images.mjs             # WebP generation pipeline
 `-- fix-image-metadata.mjs          # Source image metadata helper

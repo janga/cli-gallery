@@ -15,7 +15,9 @@ type AnchorMeasurement = {
 	headingTop: number;
 	innerHeight: number;
 	label: string;
+	maxScrollY: number;
 	round: number;
+	scrollBottomGap: number;
 	scrollPaddingTop: string;
 	scrollY: number;
 	sectionTop: number;
@@ -70,6 +72,11 @@ const measureAnchor = async (
 	const headerRect = header.getBoundingClientRect();
 	const headingRect = heading.getBoundingClientRect();
 	const sectionRect = section.getBoundingClientRect();
+	const maxScrollY = Math.max(
+		0,
+		document.documentElement.scrollHeight - window.innerHeight,
+		document.body.scrollHeight - window.innerHeight,
+	);
 	const probeY = Math.min(window.innerHeight - 1, Math.max(headerRect.bottom + 8, 0));
 	const probeX = Math.floor(window.innerWidth / 2);
 
@@ -93,7 +100,9 @@ const measureAnchor = async (
 		headingTop: headingRect.top,
 		innerHeight: window.innerHeight,
 		label,
+		maxScrollY,
 		round: currentRound,
+		scrollBottomGap: maxScrollY - window.scrollY,
 		scrollPaddingTop: styles.scrollPaddingTop,
 		scrollY: window.scrollY,
 		sectionTop: sectionRect.top,
@@ -155,7 +164,13 @@ const waitForAnchorToSettle = async (
 const expectAnchorMeasurement = (measurement: AnchorMeasurement) => {
 	expect(measurement.hash, JSON.stringify(measurement, null, 2)).toBe(measurement.targetHash);
 	expect(measurement.gap, JSON.stringify(measurement, null, 2)).toBeGreaterThanOrEqual(hiddenHeadingTolerance);
-	expect(measurement.gap, JSON.stringify(measurement, null, 2)).toBeLessThanOrEqual(maximumAnchorGap);
+
+	if (measurement.gap <= maximumAnchorGap) {
+		return;
+	}
+
+	expect(measurement.scrollBottomGap, JSON.stringify(measurement, null, 2)).toBeLessThanOrEqual(2);
+	expect(measurement.headingTop, JSON.stringify(measurement, null, 2)).toBeLessThan(measurement.innerHeight);
 };
 
 for (const viewport of viewports) {

@@ -1,12 +1,11 @@
 import { execFile } from 'node:child_process';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { projectConfig } from './lib/project-config.mjs';
+import { siteProjectRoot } from './lib/site-paths.mjs';
 
 const execFileAsync = promisify(execFile);
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const root = siteProjectRoot;
 const defaultRepo = projectConfig.github.repo;
 const defaultWorkflow = projectConfig.github.pagesWorkflow;
 const defaultBranch = projectConfig.github.branch;
@@ -47,7 +46,7 @@ const runViewFields = [
 ].join(',');
 
 const usage = `
-Usage: npm run deploy:watch -- [options]
+Usage: cli-gallery deploy:watch [options]
 
 Options:
   --repo <owner/name>     GitHub repository. Default: ${defaultRepo}

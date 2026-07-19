@@ -1,0 +1,29 @@
+{
+  "name": "cli-gallery-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev:local",
+    "dev:local": "cli-gallery dev:local",
+    "dev:restart": "cli-gallery dev:restart",
+    "dev:status": "cli-gallery dev:status",
+    "dev:logs": "cli-gallery dev:logs",
+    "dev:stop": "cli-gallery dev:stop",
+    "config:check": "cli-gallery config:check",
+    "content:check": "cli-gallery content:check",
+    "content:sync": "cli-gallery content:sync",
+    "metadata:fix": "cli-gallery metadata:fix",
+    "site:public": "cli-gallery site:public",
+    "images": "cli-gallery images",
+    "build": "cli-gallery build",
+    "build:local": "cli-gallery build:local",
+    "deploy": "cli-gallery deploy",
+    "deploy:commit": "cli-gallery deploy:commit",
+    "deploy:watch": "cli-gallery deploy:watch",
+    "doctor": "cli-gallery doctor",
+    "preview": "cli-gallery preview"
+  },
+  "dependencies": {
+    "@janga/cli-gallery": "github:janga/cli-gallery#v0.1.0"
+  }
+}

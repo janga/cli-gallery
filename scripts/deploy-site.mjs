@@ -1,6 +1,5 @@
 import { execFile, spawn } from 'node:child_process';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import {
 	getFrontmatterSections,
@@ -10,7 +9,9 @@ import {
 } from './lib/site-content.mjs';
 import { projectConfig } from './lib/project-config.mjs';
 import {
+	engineRoot,
 	generatedImagesManifestLabel,
+	siteProjectRoot,
 	siteConfigLabel,
 	siteContentLabel,
 	siteContentPath,
@@ -20,11 +21,10 @@ import {
 
 const execFileAsync = promisify(execFile);
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const root = siteProjectRoot;
 const branch = projectConfig.github.branch;
 const repo = projectConfig.github.repo;
 const pagesWorkflow = projectConfig.github.pagesWorkflow;
-const npmBin = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const args = process.argv.slice(2);
 const mode = args[0] === 'commit' ? 'commit' : 'deploy';
 const modeArgs = mode === 'commit' ? args.slice(1) : args;
@@ -44,17 +44,17 @@ const allowedExactPaths = new Set([
 const failedConclusions = new Set(['action_required', 'cancelled', 'failure', 'startup_failure', 'timed_out']);
 
 const deployUsage = [
-	'Usage: npm run deploy',
+	'Usage: cli-gallery deploy',
 	'',
 	`Publishes an already committed ${branch} branch: builds, verifies a clean worktree,`,
 	`pushes ${branch} when local ${branch} is ahead of origin/${branch}, and checks GitHub Pages.`,
 	`If local ${branch} already matches origin/${branch}, it skips push and checks Pages.`,
 	'',
 	'For the old build-and-commit convenience flow, use:',
-	'npm run deploy:commit -- "Commit message"',
+	'cli-gallery deploy:commit "Commit message"',
 ].join('\n');
 const deployCommitUsage = [
-	'Usage: npm run deploy:commit -- "Commit message"',
+	'Usage: cli-gallery deploy:commit "Commit message"',
 	'',
 	`Builds, stages only allowed site changes, commits, pushes ${branch},`,
 	'and checks GitHub Pages. Does not run npm run metadata:fix.',
@@ -94,6 +94,10 @@ const runInherit = (command, commandArgs) => new Promise((resolve, reject) => {
 			: `${commandText} exited with code ${code}.`));
 	});
 });
+
+const runBuild = async () => {
+	await runInherit(process.execPath, [path.join(engineRoot, 'scripts', 'build-site.mjs')]);
+};
 
 const printStatusShort = async () => {
 	const status = await runCapture('git', ['status', '--short']);
@@ -315,7 +319,7 @@ const deployCommittedMain = async () => {
 	await assertCleanWorktree('Refusing to deploy: commit or discard local changes before deploying.');
 	await fetchRemoteMain();
 	await assertPushableBranch();
-	await runInherit(npmBin, ['run', 'build']);
+	await runBuild();
 	await printStatusShort();
 	await assertCleanWorktree('Refusing to deploy: npm run build produced uncommitted changes. Commit them before deploying.');
 	await fetchRemoteMain();
@@ -341,7 +345,7 @@ const deployWithCommit = async () => {
 	await assertMainBranch();
 	await fetchRemoteMain();
 	await assertPushableBranch();
-	await runInherit(npmBin, ['run', 'build']);
+	await runBuild();
 	await printStatusShort();
 
 	const entries = await getStatusEntries();

@@ -2,30 +2,29 @@ import { execFile, spawn } from 'node:child_process';
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import net from 'node:net';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
+import { getAstroArgs, runAstroInherit } from './lib/astro-command.mjs';
+import { astroCacheDir, engineRoot, siteProjectRoot } from './lib/site-paths.mjs';
 
 const execFileAsync = promisify(execFile);
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const host = 'localhost';
 const port = 4321;
 const url = `http://${host}:${port}/`;
 const probeUrls = [url, `http://127.0.0.1:${port}/`, `http://[::1]:${port}/`];
-const npmBin = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const skipOpen = process.env.WALDE_NO_OPEN === '1';
-const statePath = path.join(root, '.astro', 'dev-local.json');
-const logPath = path.join(root, '.astro', 'dev.log');
+const statePath = path.join(astroCacheDir, 'dev-local.json');
+const logPath = path.join(astroCacheDir, 'dev.log');
 const command = process.argv[2] ?? 'start';
 
-const runAstro = async (args, options = {}) => execFileAsync(npmBin, ['run', 'astro', '--', ...args], {
-	cwd: root,
+const runAstro = async (args, options = {}) => execFileAsync(process.execPath, getAstroArgs(args), {
+	cwd: siteProjectRoot,
 	maxBuffer: 1024 * 1024 * 10,
 	...options,
 });
 
-const syncSitePublic = async () => execFileAsync(npmBin, ['run', 'site:public'], {
-	cwd: root,
+const syncSitePublic = async () => execFileAsync(process.execPath, [path.join(engineRoot, 'scripts', 'sync-site-public.mjs')], {
+	cwd: siteProjectRoot,
 	maxBuffer: 1024 * 1024 * 10,
 });
 
@@ -212,7 +211,7 @@ const startServer = async ({ open = true } = {}) => {
 	}
 
 	await syncSitePublic();
-	await runAstro(['dev', '--background', '--host', host, '--port', String(port)]);
+	await runAstroInherit(['dev', '--background', '--host', host, '--port', String(port)]);
 	await waitForServer();
 
 	const startedPids = await getPortPids();
