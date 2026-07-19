@@ -60,6 +60,22 @@ const runInherit = (command, args, options = {}) => new Promise((resolve, reject
 	});
 });
 
+const runExpectFailure = async (command, args, options = {}, expectedText) => {
+	try {
+		await run(command, args, options);
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+
+		if (message.includes(expectedText)) {
+			return;
+		}
+
+		throw new Error(`Expected failing command output to include "${expectedText}".\n${message}`);
+	}
+
+	throw new Error(`Expected command to fail: ${[command, ...args].join(' ')}`);
+};
+
 const npmBin = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const npxBin = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 const tempRoot = await mkdtemp(path.join(tmpdir(), 'cli-gallery-package-check-'));
@@ -95,6 +111,14 @@ const assertFileMissing = async (filePath) => {
 	}
 
 	throw new Error(`Unexpected file exists: ${filePath}.`);
+};
+
+const assertFileIncludes = async (filePath, expectedText) => {
+	const fileContent = await readFile(filePath, 'utf8');
+
+	if (!fileContent.includes(expectedText)) {
+		throw new Error(`Expected ${filePath} to include: ${expectedText}`);
+	}
 };
 
 try {
@@ -138,6 +162,23 @@ try {
 	await assertFileExists(path.join(siteProjectRoot, 'site', '.cli-gallery', 'public', 'robots.txt'));
 	await assertFileExists(path.join(siteProjectRoot, 'dist', 'robots.txt'));
 	await assertFileMissing(path.join(siteProjectRoot, 'public', 'robots.txt'));
+	await assertFileIncludes(
+		path.join(siteProjectRoot, 'dist', 'index.html'),
+		'--section-heading-font-size-desktop: clamp(1.65rem, 4.6vw, 5.65rem)',
+	);
+	await assertFileIncludes(
+		path.join(siteProjectRoot, 'dist', 'index.html'),
+		'--section-body-align-mobile: left',
+	);
+	const siteContentPath = path.join(siteProjectRoot, 'site', 'content.md');
+	const siteContent = await readFile(siteContentPath, 'utf8');
+	await writeFile(siteContentPath, siteContent.replace('desktop: center', 'desktop: sideways'));
+	await runExpectFailure(
+		npxBin,
+		['cli-gallery', 'build'],
+		{ cwd: siteProjectRoot, env: npmEnv },
+		'sections.0.heading.align.desktop',
+	);
 
 	console.log('Package check passed.');
 } finally {

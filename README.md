@@ -122,7 +122,7 @@ npm run dev:local
 ```
 
 The starter depends on `@janga/cli-gallery` through the GitHub tag
-`v0.1.3` over HTTPS. Commit the generated `package-lock.json` in the site
+`v0.1.4` over HTTPS. Commit the generated `package-lock.json` in the site
 repository so local builds and GitHub Actions use the same package version.
 
 ## Project Files
@@ -396,6 +396,20 @@ The file uses frontmatter for site-wide data and section configuration:
 copyrightOwner: Example Artist
 sections:
   - id: work
+    heading:
+      align:
+        desktop: center
+        mobile: center
+      fontSize:
+        desktop: "clamp(1.65rem, 4.6vw, 5.65rem)"
+        mobile: "clamp(1.9rem, 8vw, 3.2rem)"
+    body:
+      align:
+        desktop: center
+        mobile: left
+      fontSize:
+        desktop: "clamp(1rem, 0.96rem + 0.18vw, 1.125rem)"
+        mobile: "clamp(1rem, 0.96rem + 0.18vw, 1.125rem)"
     gallery:
       - image: example-work.jpg
         alt: Descriptive alt text.
@@ -406,6 +420,35 @@ sections:
 Each `sections` entry defines a public section and its optional gallery. The
 `id` is the stable technical key used for navigation anchors, image directories,
 and Markdown heading ids.
+
+`heading` and `body` are optional presentation controls for the section heading
+and running Markdown text. When they are present, `align` and `fontSize` must
+define both `desktop` and `mobile` values. Alignment is validated as `left`,
+`center`, or `right`. Font sizes are validated as CSS lengths or `clamp(...)`
+expressions using `rem`, `em`, `px`, `%`, or viewport units.
+
+The default first-section heading values match the original CSS:
+
+```yaml
+heading:
+  align:
+    desktop: center
+    mobile: center
+  fontSize:
+    desktop: "clamp(1.65rem, 4.6vw, 5.65rem)"
+    mobile: "clamp(1.9rem, 8vw, 3.2rem)"
+body:
+  align:
+    desktop: center
+    mobile: left
+  fontSize:
+    desktop: "clamp(1rem, 0.96rem + 0.18vw, 1.125rem)"
+    mobile: "clamp(1rem, 0.96rem + 0.18vw, 1.125rem)"
+```
+
+Later section headings default to
+`clamp(1.4rem, 3.1vw, 3.2rem)` on both desktop and mobile. These frontmatter
+fields are validated by Astro's content schema during `dev:local` and `build`.
 
 The visible section title is the Markdown heading. Each top-level site section
 must have an explicit heading id matching the frontmatter section id:

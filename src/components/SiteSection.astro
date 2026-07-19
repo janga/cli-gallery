@@ -4,6 +4,12 @@ import GalleryGrid from './GalleryGrid.astro';
 
 type SiteSection = CollectionEntry<'site'>['data']['sections'][number];
 type ResolvedSection = SiteSection & { title: string; contentHtml: string };
+type ResponsiveValue<T> = { desktop: T; mobile: T };
+type TextAlign = 'left' | 'center' | 'right';
+type TextPresentation = {
+	align?: ResponsiveValue<TextAlign>;
+	fontSize?: ResponsiveValue<string>;
+};
 
 interface Props {
 	section: ResolvedSection;
@@ -13,12 +19,57 @@ interface Props {
 
 const { section, headingLevel, priorityGalleryImage = false } = Astro.props;
 const HeadingTag = headingLevel === 1 ? 'h1' : 'h2';
+const defaultHeadingFontSize = headingLevel === 1
+	? {
+		desktop: 'clamp(1.65rem, 4.6vw, 5.65rem)',
+		mobile: 'clamp(1.9rem, 8vw, 3.2rem)',
+	}
+	: {
+		desktop: 'clamp(1.4rem, 3.1vw, 3.2rem)',
+		mobile: 'clamp(1.4rem, 3.1vw, 3.2rem)',
+	};
+const defaultHeadingAlign: ResponsiveValue<TextAlign> = {
+	desktop: 'center',
+	mobile: 'center',
+};
+const defaultBodyAlign: ResponsiveValue<TextAlign> = {
+	desktop: 'center',
+	mobile: 'left',
+};
+const defaultBodyFontSize = {
+	desktop: 'clamp(1rem, 0.96rem + 0.18vw, 1.125rem)',
+	mobile: 'clamp(1rem, 0.96rem + 0.18vw, 1.125rem)',
+};
+const getResponsiveValue = <T,>(
+	configured: ResponsiveValue<T> | undefined,
+	defaults: ResponsiveValue<T>,
+): ResponsiveValue<T> => ({
+	desktop: configured?.desktop ?? defaults.desktop,
+	mobile: configured?.mobile ?? defaults.mobile,
+});
+const heading = section.heading as TextPresentation | undefined;
+const body = section.body as TextPresentation | undefined;
+const headingAlign = getResponsiveValue(heading?.align, defaultHeadingAlign);
+const headingFontSize = getResponsiveValue(heading?.fontSize, defaultHeadingFontSize);
+const bodyAlign = getResponsiveValue(body?.align, defaultBodyAlign);
+const bodyFontSize = getResponsiveValue(body?.fontSize, defaultBodyFontSize);
+const sectionStyle = [
+	`--section-heading-align-desktop: ${headingAlign.desktop}`,
+	`--section-heading-align-mobile: ${headingAlign.mobile}`,
+	`--section-heading-font-size-desktop: ${headingFontSize.desktop}`,
+	`--section-heading-font-size-mobile: ${headingFontSize.mobile}`,
+	`--section-body-align-desktop: ${bodyAlign.desktop}`,
+	`--section-body-align-mobile: ${bodyAlign.mobile}`,
+	`--section-body-font-size-desktop: ${bodyFontSize.desktop}`,
+	`--section-body-font-size-mobile: ${bodyFontSize.mobile}`,
+].join('; ');
 ---
 
 <section
 	id={section.id}
 	class:list={['site-section', { 'site-section-primary': headingLevel === 1 }]}
 	data-section-title={section.title}
+	style={sectionStyle}
 >
 	<div class="section-card">
 		<header class="section-header">
