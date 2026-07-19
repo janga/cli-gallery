@@ -1,0 +1,118 @@
+{
+  "dog-accompanies-master.jpg": {
+    "outputVersion": 1,
+    "sourceHash": "7ef804d5ebe27724409f4ffa94389c7b1102c2c8bb9c1dae29ecbd4c56e61af9",
+    "width": 2400,
+    "height": 1800,
+    "variants": [
+      {
+        "src": "/images/generated/dogs/dog-accompanies-master-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/images/generated/dogs/dog-accompanies-master-768.webp",
+        "width": 768
+      },
+      {
+        "src": "/images/generated/dogs/dog-accompanies-master-1080.webp",
+        "width": 1080
+      },
+      {
+        "src": "/images/generated/dogs/dog-accompanies-master-1440.webp",
+        "width": 1440
+      },
+      {
+        "src": "/images/generated/dogs/dog-accompanies-master-1920.webp",
+        "width": 1920
+      },
+      {
+        "src": "/images/generated/dogs/dog-accompanies-master-2400.webp",
+        "width": 2400
+      }
+    ]
+  },
+  "photo-of-a-dog.jpg": {
+    "outputVersion": 1,
+    "sourceHash": "5cf614d2863ca8f86b6162c7b477fd2690adbc101816206c9e675bf36d9962d0",
+    "width": 960,
+    "height": 1600,
+    "variants": [
+      {
+        "src": "/images/generated/dogs/photo-of-a-dog-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/images/generated/dogs/photo-of-a-dog-768.webp",
+        "width": 768
+      },
+      {
+        "src": "/images/generated/dogs/photo-of-a-dog-960.webp",
+        "width": 960
+      }
+    ]
+  },
+  "smiling-dog.jpg": {
+    "outputVersion": 1,
+    "sourceHash": "0adcfa4d93310878d9af910d094744b078698c062f276706a556dea97023f2ba",
+    "width": 1944,
+    "height": 1532,
+    "variants": [
+      {
+        "src": "/images/generated/dogs/smiling-dog-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/images/generated/dogs/smiling-dog-768.webp",
+        "width": 768
+      },
+      {
+        "src": "/images/generated/dogs/smiling-dog-1080.webp",
+        "width": 1080
+      },
+      {
+        "src": "/images/generated/dogs/smiling-dog-1440.webp",
+        "width": 1440
+      },
+      {
+        "src": "/images/generated/dogs/smiling-dog-1920.webp",
+        "width": 1920
+      },
+      {
+        "src": "/images/generated/dogs/smiling-dog-1944.webp",
+        "width": 1944
+      }
+    ]
+  },
+  "toller-puppy.jpg": {
+    "outputVersion": 1,
+    "sourceHash": "a2a8fbc0d599deb019d45f7b11de98bcbcb4f1fd609e931073161dcb88cbf63f",
+    "width": 2576,
+    "height": 1932,
+    "variants": [
+      {
+        "src": "/images/generated/dogs/toller-puppy-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/images/generated/dogs/toller-puppy-768.webp",
+        "width": 768
+      },
+      {
+        "src": "/images/generated/dogs/toller-puppy-1080.webp",
+        "width": 1080
+      },
+      {
+        "src": "/images/generated/dogs/toller-puppy-1440.webp",
+        "width": 1440
+      },
+      {
+        "src": "/images/generated/dogs/toller-puppy-1920.webp",
+        "width": 1920
+      },
+      {
+        "src": "/images/generated/dogs/toller-puppy-2576.webp",
+        "width": 2576
+      }
+    ]
+  }
+}

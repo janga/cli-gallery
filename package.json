@@ -1,0 +1,44 @@
+{
+  "name": "cli-gallery",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "node scripts/dev-local.mjs",
+    "dev:local": "node scripts/dev-local.mjs",
+    "dev:restart": "node scripts/dev-local.mjs restart",
+    "dev:status": "node scripts/dev-local.mjs status",
+    "dev:logs": "node scripts/dev-local.mjs logs",
+    "dev:stop": "node scripts/dev-local.mjs stop",
+    "config:check": "node scripts/check-config.mjs",
+    "content:check": "node scripts/sync-content-sections.mjs --check",
+    "content:sync": "node scripts/sync-content-sections.mjs --write",
+    "metadata:fix": "node scripts/fix-image-metadata.mjs",
+    "site:public": "node scripts/sync-site-public.mjs",
+    "images": "node scripts/generate-images.mjs",
+    "build": "npm run config:check && npm run content:check && npm run site:public && npm run images && astro build",
+    "build:local": "npm run build && npm run dev:restart",
+    "deploy": "node scripts/deploy-site.mjs",
+    "deploy:commit": "node scripts/deploy-site.mjs commit",
+    "deploy:watch": "node scripts/watch-pages-deploy.mjs",
+    "test:content-check": "node scripts/test-content-check.mjs",
+    "test:site-public": "node scripts/test-site-public.mjs",
+    "test:navigation": "node scripts/test-navigation.mjs",
+    "test:navigation:stress": "node scripts/test-navigation.mjs tests/navigation-stress.spec.ts",
+    "test:navigation:preview": "node scripts/test-navigation-preview.mjs",
+    "preview": "astro preview",
+    "astro": "astro",
+    "example:config:check": "CLI_GALLERY_SITE_DIR=examples/basic/site npm run config:check",
+    "example:content:check": "CLI_GALLERY_SITE_DIR=examples/basic/site npm run content:check",
+    "example:build": "CLI_GALLERY_SITE_DIR=examples/basic/site npm run build"
+  },
+  "dependencies": {
+    "astro": "^7.0.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
+  },
+  "description": "A command-line publishing workflow for simple static galleries."
+}
