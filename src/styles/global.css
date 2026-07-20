@@ -222,7 +222,7 @@ a {
 
 .section-card {
 	background: transparent;
-	color: var(--color-text);
+	color: var(--section-text-color, var(--color-text));
 }
 
 .section-header {
@@ -242,7 +242,7 @@ ul {
 h1,
 h2 {
 	margin-bottom: 0;
-	color: var(--color-text);
+	color: inherit;
 	font-size: var(--section-heading-font-size-desktop, clamp(1.4rem, 3.1vw, 3.2rem));
 	font-weight: 400;
 	letter-spacing: 0.02em;
@@ -259,7 +259,7 @@ h2 {
 .section-body {
 	width: min(100%, 980px);
 	margin: 0 auto;
-	color: var(--color-text);
+	color: inherit;
 	font-family: var(--font-sans);
 	font-size: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
 	line-height: 1.78;
@@ -290,7 +290,7 @@ h2 {
 
 .section-markdown h4 {
 	margin: 0 0 0.85rem;
-	color: var(--color-muted);
+	color: inherit;
 	font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.08rem);
 	font-weight: 400;
 	letter-spacing: 0.02em;
@@ -364,7 +364,7 @@ h2 {
 	justify-content: center;
 	gap: 0.5rem;
 	margin-bottom: 0;
-	color: var(--color-text);
+	color: inherit;
 	font-size: 1rem;
 	font-family: var(--font-sans);
 	letter-spacing: 0;

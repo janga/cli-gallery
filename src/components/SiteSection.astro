@@ -19,11 +19,13 @@ type OverrideTextPresentation = {
 };
 type DefaultPresentation = {
 	backgroundColor?: string;
+	textColor?: string;
 	heading: DefaultTextPresentation;
 	body: DefaultTextPresentation;
 };
 type SectionPresentationOverride = {
 	backgroundColor?: string;
+	textColor?: string;
 	heading?: OverrideTextPresentation;
 	body?: OverrideTextPresentation;
 };
@@ -75,6 +77,7 @@ const bodySizeValues: Record<TextSize, ResponsiveValue<string>> = {
 };
 const fallbackPresentation = {
 	backgroundColor: 'transparent',
+	textColor: 'var(--color-text)',
 	heading: {
 		align: {
 			desktop: 'center',
@@ -106,6 +109,9 @@ const defaultPresentation = configuredDefaultPresentation ?? fallbackPresentatio
 const backgroundColor = sectionOverride?.backgroundColor
 	?? defaultPresentation.backgroundColor
 	?? fallbackPresentation.backgroundColor;
+const textColor = sectionOverride?.textColor
+	?? defaultPresentation.textColor
+	?? fallbackPresentation.textColor;
 const headingAlign = getResponsiveValue(defaultPresentation.heading.align, sectionOverride?.heading?.align);
 const headingFontSize = getSizeValue(
 	headingSizeValues,
@@ -127,6 +133,7 @@ const headingWidth = getAlignedTextWidth(headingAlign, '760px');
 const bodyWidth = getAlignedTextWidth(bodyAlign, 'var(--text-width)');
 const sectionStyle = [
 	`--section-background-color: ${backgroundColor}`,
+	`--section-text-color: ${textColor}`,
 	`--section-heading-align-desktop: ${headingAlign.desktop}`,
 	`--section-heading-align-mobile: ${headingAlign.mobile}`,
 	`--section-heading-font-size-desktop: ${headingFontSize.desktop}`,

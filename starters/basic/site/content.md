@@ -3,6 +3,7 @@ title: Example Gallery
 description: Minimal cli-gallery starter site.
 defaultPresentation:
   backgroundColor: "#000000"
+  textColor: "#f7f4ee"
   heading:
     align:
       desktop: center

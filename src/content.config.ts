@@ -36,11 +36,13 @@ const overrideTextPresentation = z.object({
 }).strict();
 const sectionPresentationOverride = z.object({
 	backgroundColor: colorValue.optional(),
+	textColor: colorValue.optional(),
 	heading: overrideTextPresentation.optional(),
 	body: overrideTextPresentation.optional(),
 }).strict();
 const defaultPresentation = z.object({
 	backgroundColor: colorValue.optional(),
+	textColor: colorValue.optional(),
 	heading: defaultTextPresentation,
 	body: defaultTextPresentation,
 }).strict();

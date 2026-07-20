@@ -33,11 +33,13 @@ Each gallery row has:
 ## Presentation
 
 `defaultPresentation` must provide complete heading and body defaults when it is
-present. `defaultPresentation.backgroundColor` is optional:
+present. `defaultPresentation.backgroundColor` and
+`defaultPresentation.textColor` are optional:
 
 ```yaml
 defaultPresentation:
   backgroundColor: "#000000"
+  textColor: "#f7f4ee"
   heading:
     align:
       desktop: center
@@ -52,9 +54,11 @@ defaultPresentation:
 
 Allowed alignment values are `left`, `center`, and `right`. Allowed size values
 are `small`, `medium`, `large`, and `xlarge`.
-`defaultPresentation.backgroundColor` must be a quoted hex color in `#rgb`,
-`#rrggbb`, or `#rrggbbaa` form. If it is omitted, section backgrounds are
-transparent over the page background.
+`defaultPresentation.backgroundColor` and `defaultPresentation.textColor` must
+be quoted hex colors in `#rgb`, `#rrggbb`, or `#rrggbbaa` form.
+If `backgroundColor` is omitted, section backgrounds are transparent over the
+page background. If `textColor` is omitted, section text uses the global site
+text color.
 
 `sections[].presentation` contains only section-specific differences:
 
@@ -63,6 +67,7 @@ sections:
   - id: intro
     presentation:
       backgroundColor: "#161616"
+      textColor: "#ffffff"
       heading:
         size: large
       body:
@@ -81,6 +86,8 @@ Centered text uses narrower text widths. Left- or right-aligned heading and body
 text use the gallery width so text edges line up with gallery images.
 Configured section backgrounds render as full-width horizontal bands while the
 section content keeps the normal page and gallery widths.
+Configured section text colors apply to section headings, Markdown text,
+Markdown subheadings, and gallery captions. Links keep the global accent color.
 
 ## Markdown Sections
 
