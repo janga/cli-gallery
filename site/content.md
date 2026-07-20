@@ -17,6 +17,7 @@ defaultPresentation:
 sections:
   - id: dogs
     presentation:
+      backgroundColor: "#050505"
       heading:
         size: large
     gallery:
@@ -33,6 +34,8 @@ sections:
         alt: "A dog in sunlight looking toward the camera with its mouth open."
         caption: "Smiling dog. Brandon Weeks, public domain, via Wikimedia Commons."
   - id: sources
+    presentation:
+      backgroundColor: "#1f2620"
 ---
 
 ## Dogs {#dogs}

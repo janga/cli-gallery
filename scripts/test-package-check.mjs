@@ -179,6 +179,14 @@ try {
 	);
 	await assertFileIncludes(
 		path.join(siteProjectRoot, 'dist', 'index.html'),
+		'--site-top-background-color: #000000',
+	);
+	await assertFileIncludes(
+		path.join(siteProjectRoot, 'dist', 'index.html'),
+		'--site-top-text-color: #f7f4ee',
+	);
+	await assertFileIncludes(
+		path.join(siteProjectRoot, 'dist', 'index.html'),
 		'--section-text-color: #f7f4ee',
 	);
 	const siteContentPath = path.join(siteProjectRoot, 'site', 'content.md');

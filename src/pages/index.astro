@@ -19,7 +19,7 @@ const resolvedSections = getSectionsContent(siteHtml, sections);
 ---
 
 <BaseLayout title={site.data.title} description={site.data.description}>
-	<SiteNavigation sections={resolvedSections} />
+	<SiteNavigation sections={resolvedSections} defaultPresentation={site.data.defaultPresentation} />
 
 	<main id="main-content" class="site-content">
 		{resolvedSections.map((section, index) => (

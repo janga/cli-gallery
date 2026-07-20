@@ -100,8 +100,10 @@ a {
 	padding-top: var(--nav-top-safety-inset);
 	padding-top: max(env(safe-area-inset-top, 0px), var(--nav-top-safety-inset));
 	border-bottom: 1px solid var(--color-border);
-	background: var(--color-nav-background);
+	background-color: var(--site-top-background-color, var(--color-nav-background));
+	color: var(--site-top-text-color, var(--color-text));
 	backdrop-filter: blur(16px);
+	transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 .section-nav ul {
@@ -123,16 +125,17 @@ a {
 	top: 50%;
 	left: calc(clamp(1.4rem, 4vw, 3.25rem) / -2 - 0.1rem);
 	transform: translateY(-50%);
-	color: var(--color-nav-separator);
+	color: currentColor;
 	content: "/";
 	font-size: 0.75rem;
+	opacity: 0.28;
 }
 
 .section-nav a {
 	display: block;
 	position: relative;
 	padding: 1.05rem 0 0.95rem;
-	color: var(--color-muted);
+	color: currentColor;
 	font-size: 0.76rem;
 	font-weight: 500;
 	letter-spacing: 0.12em;
@@ -157,7 +160,6 @@ a {
 
 .section-nav a:hover,
 .section-nav a[aria-current='true'] {
-	color: var(--color-text);
 	opacity: 1;
 }
 
@@ -177,7 +179,7 @@ a {
 	z-index: 2;
 	width: min(calc(100% - (var(--content-gutter) * 2)), var(--page-width));
 	margin: 0 auto;
-	padding: var(--space-nav-to-first-section) 0 var(--space-section-to-section);
+	padding: 0;
 }
 
 .site-footer {
@@ -204,7 +206,7 @@ a {
 	position: relative;
 	isolation: isolate;
 	background-color: var(--section-background-color, transparent);
-	padding: 0;
+	padding: var(--space-nav-to-first-section) 0 0;
 }
 
 .site-section::before {
@@ -217,7 +219,12 @@ a {
 }
 
 .site-section + .site-section {
-	margin-top: var(--space-section-to-section);
+	margin-top: 0;
+	padding-top: var(--space-section-to-section);
+}
+
+.site-section:last-child {
+	padding-bottom: var(--space-section-to-section);
 }
 
 .section-card {
@@ -401,7 +408,6 @@ h2 {
 
 	.site-content {
 		width: min(calc(100% - 2rem), var(--page-width));
-		padding: var(--space-nav-to-first-section) 0 var(--space-section-to-section);
 	}
 
 	.site-footer {
@@ -409,7 +415,7 @@ h2 {
 	}
 
 	.site-section + .site-section {
-		margin-top: var(--space-section-to-section);
+		margin-top: 0;
 	}
 
 	.section-body {
