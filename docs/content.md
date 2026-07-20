@@ -89,7 +89,8 @@ section content keeps the normal page and gallery widths. The top spacing
 before the first heading, the spacing between sections, and the spacing after
 the final section are part of the section background. The sticky section
 navigation row uses the default background and text colors, even when the active
-section has section-specific overrides.
+section has section-specific overrides. The footer uses the same default
+background and text colors.
 Configured section text colors apply to section headings, Markdown text,
 Markdown subheadings, and gallery captions. Links keep the global accent color.
 

@@ -1,15 +1,20 @@
 ---
+import type { CollectionEntry } from 'astro:content';
 import projectConfig from '../../scripts/lib/project-config.mjs';
 import '../styles/global.css';
+
+type SiteDefaultPresentation = CollectionEntry<'site'>['data']['defaultPresentation'];
 
 interface Props {
 	title?: string;
 	description?: string;
+	defaultPresentation?: SiteDefaultPresentation;
 }
 
 const {
 	title = 'cli-gallery',
 	description = 'A cli-gallery site.',
+	defaultPresentation: configuredDefaultPresentation,
 } = Astro.props;
 
 const documentTitle = title;
@@ -25,6 +30,10 @@ const buildTime = showBuildInfo
 	}).format(new Date())
 	: null;
 const showFooter = Boolean(copyrightMessage || showBuildInfo);
+const footerStyle = [
+	`--site-footer-background-color: ${configuredDefaultPresentation?.backgroundColor ?? 'var(--color-page)'}`,
+	`--site-footer-text-color: ${configuredDefaultPresentation?.textColor ?? 'var(--color-muted)'}`,
+].join('; ');
 ---
 
 <!doctype html>
@@ -43,7 +52,7 @@ const showFooter = Boolean(copyrightMessage || showBuildInfo);
 	<body>
 		<slot />
 		{showFooter && (
-			<footer class="site-footer">
+			<footer class="site-footer" style={footerStyle}>
 				<p>
 					{copyrightMessage}
 					{showBuildInfo && <span>{buildInfo.text} {buildTime}</span>}

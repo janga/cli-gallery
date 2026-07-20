@@ -18,7 +18,11 @@ const siteHtml = site.rendered?.html ?? '';
 const resolvedSections = getSectionsContent(siteHtml, sections);
 ---
 
-<BaseLayout title={site.data.title} description={site.data.description}>
+<BaseLayout
+	title={site.data.title}
+	description={site.data.description}
+	defaultPresentation={site.data.defaultPresentation}
+>
 	<SiteNavigation sections={resolvedSections} defaultPresentation={site.data.defaultPresentation} />
 
 	<main id="main-content" class="site-content">
