@@ -201,7 +201,19 @@ a {
 }
 
 .site-section {
+	position: relative;
+	isolation: isolate;
+	background-color: var(--section-background-color, transparent);
 	padding: 0;
+}
+
+.site-section::before {
+	position: absolute;
+	z-index: -1;
+	inset: 0 calc(50% - 50vw);
+	background-color: var(--section-background-color, transparent);
+	content: "";
+	pointer-events: none;
 }
 
 .site-section + .site-section {

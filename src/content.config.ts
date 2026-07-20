@@ -9,6 +9,10 @@ const siteEntryId = `${siteDirLabel
 	.replace(/[^a-zA-Z0-9-]+/g, '-')
 	.replace(/^-+|-+$/g, '') || 'site'}-content`;
 const contentImageName = z.string().regex(/^[a-z0-9][a-z0-9.-]*\.(jpe?g|png)$/i);
+const colorValue = z.string().regex(
+	/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/,
+	'Use a hex color such as "#000000".',
+);
 const textAlign = z.enum(['left', 'center', 'right']);
 const textSize = z.enum(['small', 'medium', 'large', 'xlarge']);
 const defaultResponsiveTextAlign = z.object({
@@ -31,10 +35,12 @@ const overrideTextPresentation = z.object({
 	size: textSize.optional(),
 }).strict();
 const sectionPresentationOverride = z.object({
+	backgroundColor: colorValue.optional(),
 	heading: overrideTextPresentation.optional(),
 	body: overrideTextPresentation.optional(),
 }).strict();
 const defaultPresentation = z.object({
+	backgroundColor: colorValue.optional(),
 	heading: defaultTextPresentation,
 	body: defaultTextPresentation,
 }).strict();

@@ -17,6 +17,16 @@ type OverrideTextPresentation = {
 	align?: ResponsiveOverride<TextAlign>;
 	size?: TextSize;
 };
+type DefaultPresentation = {
+	backgroundColor?: string;
+	heading: DefaultTextPresentation;
+	body: DefaultTextPresentation;
+};
+type SectionPresentationOverride = {
+	backgroundColor?: string;
+	heading?: OverrideTextPresentation;
+	body?: OverrideTextPresentation;
+};
 
 interface Props {
 	section: ResolvedSection;
@@ -64,6 +74,7 @@ const bodySizeValues: Record<TextSize, ResponsiveValue<string>> = {
 	},
 };
 const fallbackPresentation = {
+	backgroundColor: 'transparent',
 	heading: {
 		align: {
 			desktop: 'center',
@@ -78,11 +89,8 @@ const fallbackPresentation = {
 		},
 		size: 'medium',
 	},
-} satisfies { heading: DefaultTextPresentation; body: DefaultTextPresentation };
-const sectionOverride = section.presentation as {
-	heading?: OverrideTextPresentation;
-	body?: OverrideTextPresentation;
-} | undefined;
+} satisfies DefaultPresentation & { backgroundColor: string };
+const sectionOverride = section.presentation as SectionPresentationOverride | undefined;
 const getResponsiveValue = <T,>(
 	defaults: ResponsiveValue<T>,
 	override: ResponsiveOverride<T> | undefined,
@@ -95,6 +103,9 @@ const getSizeValue = (
 	size: TextSize,
 ) => sizeValues[size];
 const defaultPresentation = configuredDefaultPresentation ?? fallbackPresentation;
+const backgroundColor = sectionOverride?.backgroundColor
+	?? defaultPresentation.backgroundColor
+	?? fallbackPresentation.backgroundColor;
 const headingAlign = getResponsiveValue(defaultPresentation.heading.align, sectionOverride?.heading?.align);
 const headingFontSize = getSizeValue(
 	headingSizeValues,
@@ -115,6 +126,7 @@ const getAlignedTextWidth = (
 const headingWidth = getAlignedTextWidth(headingAlign, '760px');
 const bodyWidth = getAlignedTextWidth(bodyAlign, 'var(--text-width)');
 const sectionStyle = [
+	`--section-background-color: ${backgroundColor}`,
 	`--section-heading-align-desktop: ${headingAlign.desktop}`,
 	`--section-heading-align-mobile: ${headingAlign.mobile}`,
 	`--section-heading-font-size-desktop: ${headingFontSize.desktop}`,

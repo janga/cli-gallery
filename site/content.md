@@ -2,6 +2,7 @@
 title: Local Dog Gallery
 description: A small cli-gallery example with free dog images.
 defaultPresentation:
+  backgroundColor: "#000000"
   heading:
     align:
       desktop: left

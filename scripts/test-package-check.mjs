@@ -173,6 +173,10 @@ try {
 		path.join(siteProjectRoot, 'dist', 'index.html'),
 		'--section-body-align-mobile: left',
 	);
+	await assertFileIncludes(
+		path.join(siteProjectRoot, 'dist', 'index.html'),
+		'--section-background-color: #000000',
+	);
 	const siteContentPath = path.join(siteProjectRoot, 'site', 'content.md');
 	const siteContent = await readFile(siteContentPath, 'utf8');
 	await writeFile(siteContentPath, siteContent.replace('desktop: center', 'desktop: sideways'));
@@ -181,6 +185,16 @@ try {
 		['cli-gallery', 'build'],
 		{ cwd: siteProjectRoot, env: npmEnv },
 		'defaultPresentation.heading.align.desktop',
+	);
+	await writeFile(
+		siteContentPath,
+		siteContent.replace('backgroundColor: "#000000"', 'backgroundColor: blue'),
+	);
+	await runExpectFailure(
+		npxBin,
+		['cli-gallery', 'build'],
+		{ cwd: siteProjectRoot, env: npmEnv },
+		'defaultPresentation.backgroundColor',
 	);
 	await writeFile(
 		siteContentPath,

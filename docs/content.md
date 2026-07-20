@@ -19,7 +19,8 @@ Each `sections[]` item has:
 
 - `id`: required string matching `^[a-z0-9-]+$`. Used for anchors, navigation,
   image directories, and Markdown heading ids.
-- `presentation`: optional object with `heading` and/or `body` overrides.
+- `presentation`: optional object with `backgroundColor`, `heading`, and/or
+  `body` overrides.
 - `gallery`: optional array, defaulting to `[]`.
 
 Each gallery row has:
@@ -32,10 +33,11 @@ Each gallery row has:
 ## Presentation
 
 `defaultPresentation` must provide complete heading and body defaults when it is
-present:
+present. `defaultPresentation.backgroundColor` is optional:
 
 ```yaml
 defaultPresentation:
+  backgroundColor: "#000000"
   heading:
     align:
       desktop: center
@@ -50,6 +52,9 @@ defaultPresentation:
 
 Allowed alignment values are `left`, `center`, and `right`. Allowed size values
 are `small`, `medium`, `large`, and `xlarge`.
+`defaultPresentation.backgroundColor` must be a quoted hex color in `#rgb`,
+`#rrggbb`, or `#rrggbbaa` form. If it is omitted, section backgrounds are
+transparent over the page background.
 
 `sections[].presentation` contains only section-specific differences:
 
@@ -57,6 +62,7 @@ are `small`, `medium`, `large`, and `xlarge`.
 sections:
   - id: intro
     presentation:
+      backgroundColor: "#161616"
       heading:
         size: large
       body:
@@ -73,6 +79,8 @@ body size is `medium`.
 
 Centered text uses narrower text widths. Left- or right-aligned heading and body
 text use the gallery width so text edges line up with gallery images.
+Configured section backgrounds render as full-width horizontal bands while the
+section content keeps the normal page and gallery widths.
 
 ## Markdown Sections
 
