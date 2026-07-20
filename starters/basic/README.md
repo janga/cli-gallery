@@ -15,3 +15,13 @@ public files under `site/public/`.
 
 Commit `package-lock.json` after the first install so GitHub Actions can use
 `npm ci`.
+
+Generic documentation lives in the `cli-gallery` repository:
+
+- `docs/getting-started.md`
+- `docs/site-structure.md`
+- `docs/content.md`
+- `docs/configuration.md`
+- `docs/commands.md`
+- `docs/images-and-metadata.md`
+- `docs/publishing.md`

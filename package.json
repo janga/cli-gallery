@@ -8,6 +8,7 @@
   "files": [
     "astro.config.mjs",
     "bin/",
+    "docs/",
     "fixtures/",
     "scripts/",
     "src/",

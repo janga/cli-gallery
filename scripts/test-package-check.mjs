@@ -137,6 +137,9 @@ try {
 	await runInherit('tar', ['-xzf', tarballPath, '-C', unpackDir]);
 	const packagedStarterRoot = path.join(unpackDir, 'package', 'starters', 'basic');
 	await Promise.all([
+		assertFileExists(path.join(unpackDir, 'package', 'docs', 'README.md')),
+		assertFileExists(path.join(unpackDir, 'package', 'docs', 'configuration.md')),
+		assertFileExists(path.join(unpackDir, 'package', 'docs', 'images-and-metadata.md')),
 		assertFileExists(path.join(packagedStarterRoot, '.github', 'workflows', 'deploy.yml')),
 		assertFileExists(path.join(packagedStarterRoot, 'package.json')),
 		assertFileExists(path.join(packagedStarterRoot, 'README.md')),

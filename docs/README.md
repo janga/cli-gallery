@@ -1,0 +1,33 @@
+# cli-gallery Documentation
+
+This directory contains the reusable product and engine documentation for
+`cli-gallery`. The root README is the entry point; these files hold the details.
+
+## Recommended Reading
+
+For a site maintainer:
+
+1. [Getting Started](getting-started.md)
+2. [Site Structure](site-structure.md)
+3. [Content](content.md)
+4. [Images And Metadata](images-and-metadata.md)
+5. [Local Development](local-development.md)
+6. [Publishing](publishing.md)
+
+For a developer integrating or updating the engine:
+
+1. [Commands](commands.md)
+2. [Configuration](configuration.md)
+3. [Content](content.md)
+4. [Engine Development](engine-development.md)
+
+For a quick reference:
+
+- [Configuration](configuration.md) describes every supported
+  `site/config.mjs` field, validation rule, and default.
+- [Commands](commands.md) lists the public CLI surface and starter npm scripts.
+- [Site Structure](site-structure.md) separates versioned source files from
+  generated build output.
+
+Site repositories should document only their site-specific choices and link here
+for generic `cli-gallery` behavior.
