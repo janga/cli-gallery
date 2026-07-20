@@ -20,7 +20,6 @@ try {
 
 	console.log('Config check passed.');
 	console.log(`Site URL: ${projectConfig.site.url}`);
-	console.log(`Warn on missing image copyright metadata: ${projectConfig.images.warnOnMissingCopyrightMetadata}`);
 	console.log(`GitHub repo: ${projectConfig.github.repo}`);
 	console.log(`Deploy branch: ${projectConfig.github.branch}`);
 	console.log(`Pages workflow: ${projectConfig.github.pagesWorkflow}`);

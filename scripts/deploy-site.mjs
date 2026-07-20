@@ -57,7 +57,7 @@ const deployCommitUsage = [
 	'Usage: cli-gallery deploy:commit "Commit message"',
 	'',
 	`Builds, stages only allowed site changes, commits, pushes ${branch},`,
-	'and checks GitHub Pages. Does not run npm run metadata:fix.',
+	'and checks GitHub Pages.',
 ].join('\n');
 
 const fail = (message) => {

@@ -1,7 +1,6 @@
 ---
 title: Local Dog Gallery
 description: A small cli-gallery example with free dog images.
-copyrightOwner: Wikimedia Commons contributors
 defaultPresentation:
   heading:
     align:

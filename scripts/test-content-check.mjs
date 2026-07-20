@@ -49,7 +49,6 @@ const withTempProject = async ({ site, files, siteDirectory = 'site' }, run) => 
 };
 
 const brokenSite = `---
-copyrightOwner: Test Owner
 sections:
   - id: karin-walde
     gallery:
@@ -120,7 +119,6 @@ test('content:check respects CLI_GALLERY_SITE_DIR', async () => {
 });
 
 const movableSite = `---
-copyrightOwner: Test Owner
 sections:
   - id: min-konst
     gallery:

@@ -10,9 +10,6 @@ export default {
 			durationPerPixelMs: 0.2,
 		},
 	},
-	images: {
-		warnOnMissingCopyrightMetadata: true,
-	},
 	footer: {
 		copyrightMessage: '(c) Fixture Artist.',
 		buildInfo: {

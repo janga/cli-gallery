@@ -39,7 +39,7 @@ The core model is file-driven:
 4. Store static site files such as favicons, `robots.txt`, and `CNAME` under
    `site/public/`.
 5. Run validation scripts to check configuration, content structure, image
-   references, section order, and metadata policy.
+   references, and section order.
 6. Generate optimized WebP variants from the referenced source images.
 7. Build a static Astro site.
 8. Commit, push, and deploy through GitHub Pages.
@@ -57,10 +57,9 @@ internal structure. When a command is started from a subdirectory, `cli-gallery`
 walks upward until it finds the selected site directory.
 
 `site/config.mjs` holds technical project configuration such as public URL,
-navigation behavior, footer rendering, image metadata policy, GitHub repository,
-deploy branch, and workflow names. `site/content.md` holds editorial content:
-section order, section body text, gallery image references, alt text, and
-captions.
+navigation behavior, footer rendering, GitHub repository, deploy branch, and
+workflow names. `site/content.md` holds editorial content: section order,
+section body text, gallery image references, alt text, and captions.
 
 ## Tech Stack
 
@@ -69,7 +68,6 @@ captions.
 - Node.js scripts validate configuration, validate/sync content, process images,
   and manage deploy checks.
 - ImageMagick creates generated WebP image variants.
-- `exiftool` checks and writes source image copyright metadata.
 - Playwright provides navigation and anchor-scroll diagnostics.
 - GitHub Actions builds and publishes the site to GitHub Pages.
 
@@ -122,7 +120,7 @@ npm run dev:local
 ```
 
 The starter depends on `@janga/cli-gallery` through the GitHub tag
-`v0.1.7` over HTTPS. Commit the generated `package-lock.json` in the site
+`v0.1.8` over HTTPS. Commit the generated `package-lock.json` in the site
 repository so local builds and GitHub Actions use the same package version.
 
 ## Project Files
@@ -156,7 +154,6 @@ The project expects:
 - Node.js `>=22.12.0`.
 - ImageMagick, either `magick` or the older `identify` and `convert` commands,
   for local image generation.
-- `exiftool` for build-time image metadata warnings and `metadata:fix`.
 - GitHub CLI (`gh`) for deploy checks and deploy monitoring.
 - Playwright Chromium when running navigation diagnostics.
 
@@ -180,11 +177,10 @@ For ordinary content, layout, or image work in a site repository, use this flow:
 | 3 | Validate project configuration. | `npm run config:check` |
 | 4 | Validate content and gallery references. | `npm run content:check` |
 | 5 | Repair section order or moved gallery images when needed. | `npm run content:sync` |
-| 6 | Add missing source image metadata when appropriate. | `npm run metadata:fix` |
-| 7 | Build locally for confidence. | `npm run build` |
-| 8 | Review and commit the intended changes. | Check `git status --short` and `git diff`, then commit. |
-| 9 | Deploy the already committed deploy branch. | `npm run deploy` |
-| 10 | Monitor the GitHub Pages workflow when wanted. | `npm run deploy:watch` |
+| 6 | Build locally for confidence. | `npm run build` |
+| 7 | Review and commit the intended changes. | Check `git status --short` and `git diff`, then commit. |
+| 8 | Deploy the already committed deploy branch. | `npm run deploy` |
+| 9 | Monitor the GitHub Pages workflow when wanted. | `npm run deploy:watch` |
 
 In command form:
 
@@ -266,8 +262,6 @@ repository deploys from a directory other than `site/`.
 
 - `site.url`: the public canonical URL used by the layout and deploy monitor.
 - `navigation.smoothScroll`: controlled anchor scroll behavior and timing.
-- `images.warnOnMissingCopyrightMetadata`: whether image generation warns when
-  source images lack copyright or creator metadata.
 - `footer.copyrightMessage`: optional footer copyright text.
 - `footer.buildInfo`: optional footer build timestamp text and date/time
   formatting.
@@ -288,7 +282,6 @@ cli-gallery dev:local
 cli-gallery config:check
 cli-gallery content:check
 cli-gallery content:sync
-cli-gallery metadata:fix
 cli-gallery site:public
 cli-gallery images
 cli-gallery build
@@ -337,21 +330,6 @@ navigation: {
 }
 ```
 
-### Images
-
-`images.warnOnMissingCopyrightMetadata` controls whether `npm run build` warns
-when a referenced source image lacks copyright or creator metadata. The default
-is `true`. Builds and deploys do not fail because metadata is missing. Set this
-to `false` for a site that deliberately tracks licensing elsewhere.
-
-Example:
-
-```js
-images: {
-	warnOnMissingCopyrightMetadata: true,
-}
-```
-
 ### Footer
 
 Footer build information is rendered when `footer.buildInfo.enabled` is `true`.
@@ -393,7 +371,6 @@ The site is built as one static page. Keep editable site content in
 The file uses frontmatter for site-wide data and section configuration:
 
 ```yaml
-copyrightOwner: Example Artist
 defaultPresentation:
   heading:
     align:
@@ -575,25 +552,6 @@ deploys. With a cache hit and a current
 variants; with a cache miss or a changed source-image hash, it rebuilds them
 from source images under the selected site `images/` directory.
 
-## Image Metadata
-
-Original source images can be marked with copyright metadata:
-
-```sh
-npm run metadata:fix
-```
-
-Run this only when new source images should be tagged with the site's copyright
-metadata, or when a build warning reveals missing metadata that you want to
-write into source files. The script reads `copyrightOwner` from
-`site/content.md`, checks source images under `site/images/`, and writes simple
-copyright metadata only to images that are missing it.
-
-`npm run build`, `npm run deploy`, and `npm run deploy:commit` do not run
-`metadata:fix` and never modify original source images. They also do not create
-new copyright metadata in generated image files. If `metadata:fix` updates
-source images, commit those updated source files.
-
 ## Presentation And Routing
 
 The site is a single static Astro page at `/`. Navigation uses same-page anchor
@@ -644,8 +602,7 @@ The deploy script is intentionally conservative. It:
 - Checks the GitHub Pages workflow configured in `site/config.mjs`.
 - Fetches failed logs when the latest Pages run has failed.
 
-The deploy script does not create commits, push uncommitted changes, or run
-`npm run metadata:fix`.
+The deploy script does not create commits or push uncommitted changes.
 
 The older build-and-commit convenience flow is still available when that is the
 desired workflow:
@@ -655,8 +612,7 @@ npm run deploy:commit -- "Describe the change"
 ```
 
 `deploy:commit` builds, stages only allowed site changes, commits,
-pushes the configured deploy branch, and checks GitHub Pages. It does not run
-`npm run metadata:fix`.
+pushes the configured deploy branch, and checks GitHub Pages.
 
 ## Monitoring A Deploy
 
@@ -736,19 +692,6 @@ npm run content:sync
 This repairs section ordering and moves referenced image files into the matching
 section directory after asking for confirmation.
 
-### Missing Image Metadata
-
-Run:
-
-```sh
-npm run metadata:fix
-npm run build
-```
-
-Commit any source images that `metadata:fix` updated. If a site deliberately
-tracks licensing elsewhere, set `images.warnOnMissingCopyrightMetadata` to
-`false` in `site/config.mjs`.
-
 ### Local Preview Shows Stale Content
 
 Run:
@@ -816,7 +759,6 @@ npm run dev:stop
 npm run config:check
 npm run content:check
 npm run content:sync
-npm run metadata:fix
 npm run site:public
 npm run images
 ```
@@ -894,8 +836,7 @@ scripts/
 |-- test-content-check.mjs          # Content validation regression tests
 |-- test-package-check.mjs          # Packed-package integration test
 |-- test-site-public.mjs            # Static public file sync regression tests
-|-- generate-images.mjs             # WebP generation pipeline
-`-- fix-image-metadata.mjs          # Source image metadata helper
+`-- generate-images.mjs             # WebP generation pipeline
 tests/                              # Playwright navigation regression tests
 ```
 

@@ -1,7 +1,7 @@
 {
   "name": "@janga/cli-gallery",
   "type": "module",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "bin": {
     "cli-gallery": "./bin/cli-gallery.mjs"
   },
@@ -29,7 +29,6 @@
     "config:check": "node bin/cli-gallery.mjs config:check",
     "content:check": "node bin/cli-gallery.mjs content:check",
     "content:sync": "node bin/cli-gallery.mjs content:sync",
-    "metadata:fix": "node bin/cli-gallery.mjs metadata:fix",
     "site:public": "node bin/cli-gallery.mjs site:public",
     "images": "node bin/cli-gallery.mjs images",
     "build": "npm run demo:build",

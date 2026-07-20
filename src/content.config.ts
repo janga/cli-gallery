@@ -48,7 +48,6 @@ const galleryImage = z.object({
 const siteSchema = z.object({
 	title: z.string(),
 	description: z.string(),
-	copyrightOwner: z.string().min(1),
 	defaultPresentation: defaultPresentation.optional(),
 	sections: z.array(
 		z.object({

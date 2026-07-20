@@ -134,22 +134,9 @@ const readBuildInfo = (footer) => {
 	});
 };
 
-const readImageMetadataPolicy = (images) => {
-	if (images.warnOnMissingCopyrightMetadata !== undefined) {
-		return readBoolean(images, 'warnOnMissingCopyrightMetadata', 'images', true);
-	}
-
-	if (images.requireCopyrightMetadata !== undefined) {
-		return readBoolean(images, 'requireCopyrightMetadata', 'images', true);
-	}
-
-	return true;
-};
-
 const rawConfig = assertObject(siteConfig, 'default export');
 const rawSite = assertObject(rawConfig.site, 'site');
 const rawNavigation = assertObject(rawConfig.navigation ?? {}, 'navigation');
-const rawImages = assertObject(rawConfig.images ?? {}, 'images');
 const rawFooter = assertObject(rawConfig.footer ?? {}, 'footer');
 const rawGithub = assertObject(rawConfig.github, 'github');
 const rawDeploy = assertObject(rawConfig.deploy ?? {}, 'deploy');
@@ -161,9 +148,6 @@ export const projectConfig = Object.freeze({
 	}),
 	navigation: Object.freeze({
 		smoothScroll: readSmoothScroll(rawNavigation),
-	}),
-	images: Object.freeze({
-		warnOnMissingCopyrightMetadata: readImageMetadataPolicy(rawImages),
 	}),
 	footer: Object.freeze({
 		buildInfo: readBuildInfo(rawFooter),

@@ -1,7 +1,6 @@
 ---
 title: Fixture Gallery
 description: Minimal cli-gallery fixture site.
-copyrightOwner: Fixture Artist
 sections:
   - id: intro
     gallery: []

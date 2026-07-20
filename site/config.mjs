@@ -18,10 +18,6 @@ export default {
 			durationPerPixelMs: 0.22,
 		},
 	},
-	images: {
-		// Set to false to silence warnings when source images lack copyright metadata.
-		warnOnMissingCopyrightMetadata: true,
-	},
 	footer: {
 		// Omit this value to hide the copyright sentence.
 		copyrightMessage: 'Dog images from Wikimedia Commons; see image captions for license details.',

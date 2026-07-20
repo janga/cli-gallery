@@ -1,7 +1,6 @@
 ---
 title: Example Gallery
 description: Minimal cli-gallery starter site.
-copyrightOwner: Example Artist
 defaultPresentation:
   heading:
     align:

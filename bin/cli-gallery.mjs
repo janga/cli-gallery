@@ -16,7 +16,6 @@ Commands:
   config:check           Validate site/config.mjs
   content:check          Validate site/content.md and gallery references
   content:sync           Rewrite section order and move misplaced images
-  metadata:fix           Write missing copyright metadata to source images
   site:public            Sync site/public/ to public/
   images                 Generate optimized image variants
   build                  Build the selected site
@@ -123,8 +122,6 @@ try {
 		await runAstroInherit(['sync']);
 	} else if (command === 'content:sync') {
 		await runScript('scripts/sync-content-sections.mjs', ['--write', ...rest]);
-	} else if (command === 'metadata:fix') {
-		await runScript('scripts/fix-image-metadata.mjs', rest);
 	} else if (command === 'site:public') {
 		await runScript('scripts/sync-site-public.mjs', rest);
 	} else if (command === 'images') {

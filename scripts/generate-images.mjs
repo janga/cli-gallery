@@ -9,7 +9,6 @@ import {
 	readSiteFile,
 	supportedImageExtensions,
 } from './lib/site-content.mjs';
-import projectConfig from './lib/project-config.mjs';
 import {
 	astroPublicDir,
 	generatedImagesDir,
@@ -26,18 +25,6 @@ const execFileAsync = promisify(execFile);
 const imageOutputVersion = 2;
 const sourceHashSlugLength = 8;
 const widths = [480, 768, 1080, 1440, 1920];
-const metadataReadTags = [
-	'-Artist',
-	'-Creator',
-	'-By-line',
-	'-Copyright',
-	'-Rights',
-	'-CopyrightNotice',
-	'-Credit',
-	'-Marked',
-	'-Owner',
-];
-const metadataFieldNames = metadataReadTags.map((tag) => tag.slice(1));
 
 const run = async (command, args) => {
 	const { stdout } = await execFileAsync(command, args, { maxBuffer: 1024 * 1024 * 10 });
@@ -87,16 +74,6 @@ const getImageMagick = async () => {
 	}
 
 	throw new Error('ImageMagick is missing. Install either the "magick" command or both "identify" and "convert".');
-};
-
-const getExifTool = async () => {
-	if (await canRun('exiftool', ['-ver'])) {
-		return {
-			read: (sourcePath) => run('exiftool', ['-json', ...metadataReadTags, sourcePath]),
-		};
-	}
-
-	return null;
 };
 
 const toPublicPath = (filePath) => filePath.split(path.sep).join('/');
@@ -202,28 +179,6 @@ const getHash = (value) => createHash('sha256').update(value).digest('hex');
 const getSourceHash = async (sourcePath) => {
 	const file = await readFile(sourcePath);
 	return getHash(file);
-};
-
-const readMetadata = async (sourcePath) => {
-	const output = await exifTool.read(sourcePath);
-	return JSON.parse(output)[0] ?? {};
-};
-
-const hasCopyrightMetadata = (metadata) => metadataFieldNames.some((tag) => {
-	const value = metadata[tag];
-	return typeof value === 'string' ? value.trim() : Boolean(value);
-});
-
-const warnMissingMetadata = (sourcePath, metadata) => {
-	if (!projectConfig.images.warnOnMissingCopyrightMetadata) {
-		return;
-	}
-
-	if (hasCopyrightMetadata(metadata)) {
-		return;
-	}
-
-	console.warn(`Warning: Image file is missing copyright/creator metadata: ${siteImagesLabel}/${getSiteImagePath(sourcePath)}. Run npm run metadata:fix only when this source image should be tagged with the site's copyright metadata, then commit the updated image.`);
 };
 
 const getVariantWidths = ({ width }) => {
@@ -346,18 +301,10 @@ if (sources.length === 0) {
 }
 
 const imageMagick = await getImageMagick();
-const exifTool = await getExifTool();
-
-if (projectConfig.images.warnOnMissingCopyrightMetadata && !exifTool) {
-	console.warn(`Warning: exiftool is missing, so source image copyright metadata was not checked. Install exiftool to enable build-time warnings, or run npm run metadata:fix when you intentionally want to write metadata to source images.`);
-}
 
 for (const sourcePath of sources) {
 	const imageName = path.basename(sourcePath);
 	const sourceHash = await getSourceHash(sourcePath);
-	if (exifTool) {
-		warnMissingMetadata(sourcePath, await readMetadata(sourcePath));
-	}
 	const reusableEntry = await getReusableEntry(sourcePath, previousManifest[imageName], sourceHash);
 
 	if (reusableEntry) {
