@@ -60,6 +60,20 @@ failures.
 
 It needs network access when npm dependencies are not already cached.
 
+## Manual npm Release
+
+The npm package is published under the `@janga` scope. For a manual public
+release, set the intended version in `package.json` and `package-lock.json`,
+verify the package contents, then publish from this repository:
+
+```sh
+npm pack --dry-run
+npm publish --access public
+```
+
+After publication, site repositories should depend on the exact published npm
+version and commit their updated `package-lock.json`.
+
 ## Rendering Notes
 
 The renderer builds one static page at `/`. Section navigation uses real

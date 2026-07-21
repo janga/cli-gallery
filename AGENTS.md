@@ -16,6 +16,16 @@ maintainer, put it in `README.md` instead of duplicating it here.
 - Commit before pushing.
 - Do not run `npm run deploy:watch` in this engine repository unless the user
   explicitly asks for it. Deploy monitoring is for site repositories.
+- For visual presentation, layout, color, spacing, sticky navigation, footer,
+  and demo-content changes, prefer human local inspection before automated
+  tests. Start or reuse a local dev server and give the user the URL when visual
+  inspection is needed. After the user approves the visual result, run the
+  relevant automated checks before committing, unless the user explicitly says
+  to skip tests.
+- Exceptions to human-first testing: run a quick relevant automated check early
+  when schema validation, config validation, packaging, build mechanics, or
+  deploy behavior may be broken by the change. If the user explicitly says to
+  skip tests, do not run them and report that they were skipped.
 - Keep technical project settings in `site/config.mjs`; do not hardcode the
   public URL, GitHub repo, deploy branch, Pages workflow name, footer text,
   or smooth-scroll timing in scripts or components.

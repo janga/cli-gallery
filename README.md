@@ -52,9 +52,9 @@ npm install
 npm run dev:local
 ```
 
-The starter pins `@janga/cli-gallery` to a GitHub tag. Commit the generated
-`package-lock.json` in the site repository so local builds and GitHub Actions
-use the same engine version.
+The starter pins `@janga/cli-gallery` to an exact npm version. Commit the
+generated `package-lock.json` in the site repository so local builds and GitHub
+Actions use the same engine version.
 
 ## Common Tasks
 
