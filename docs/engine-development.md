@@ -72,7 +72,13 @@ verify the package contents, then publish from this repository:
 
 ```sh
 npm pack --dry-run
-npm publish --access public
+npm run release:publish
+```
+
+The same publish shortcut can be started from any directory:
+
+```sh
+npm --prefix /Users/jangarefelt/Projects/cli-gallery run release:publish
 ```
 
 After publication, site repositories should depend on the exact published npm

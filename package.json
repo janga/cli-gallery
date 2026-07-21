@@ -67,6 +67,7 @@
     "test:navigation:stress": "node scripts/test-navigation.mjs tests/navigation-stress.spec.ts",
     "test:navigation:preview": "node scripts/test-navigation-preview.mjs",
     "package:check": "node scripts/test-package-check.mjs",
+    "release:publish": "npm publish --access public --registry=https://registry.npmjs.org/ --cache /private/tmp/cli-gallery-npm-cache",
     "preview": "node bin/cli-gallery.mjs preview",
     "astro": "node bin/cli-gallery.mjs astro"
   },
