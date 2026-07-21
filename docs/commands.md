@@ -16,6 +16,9 @@ cli-gallery content:check
 cli-gallery content:sync
 cli-gallery site:public
 cli-gallery images
+cli-gallery engine:update [version|latest]
+cli-gallery engine:version [--latest]
+cli-gallery init <target-dir>
 cli-gallery build
 cli-gallery build:local
 cli-gallery deploy
@@ -52,6 +55,8 @@ npm run content:check
 npm run content:sync
 npm run site:public
 npm run images
+npm run engine:update
+npm run engine:version
 npm run build
 npm run build:local
 npm run deploy
@@ -78,6 +83,17 @@ npm run preview
   removes stale copied static files.
 - `images`: generates WebP variants and writes
   `site/.cli-gallery/generated-images.json`.
+- `engine:update [version|latest]`: updates the site repository's
+  `@janga/cli-gallery` dependency with `npm install --save-exact`, then runs
+  config/content/build checks. Use `--skip-checks` to update package files only.
+  Unless npm already has a cache configured, it uses
+  `node_modules/.cache/cli-gallery-npm` in the site project.
+- `engine:version [--latest]`: prints the declared site dependency, installed
+  engine version, engine root, Astro dependency, and installed Astro version.
+  With `--latest`, it also asks npm for the latest published engine version.
+- `init <target-dir>`: copies the packaged basic starter into a new or empty
+  directory and pins its `@janga/cli-gallery` dependency to the version that
+  created it.
 - `build`: runs config check, content check, public sync, image generation, and
   Astro build.
 - `build:local`: runs `build` and restarts `dev:local`.

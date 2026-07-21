@@ -82,6 +82,7 @@ const tempRoot = await mkdtemp(path.join(tmpdir(), 'cli-gallery-package-check-')
 const packDir = path.join(tempRoot, 'pack');
 const unpackDir = path.join(tempRoot, 'unpack');
 const siteProjectRoot = path.join(tempRoot, 'site-project');
+const initializedSiteRoot = path.join(tempRoot, 'initialized-site');
 const npmCachePath = path.resolve(
 	repoRoot,
 	process.env.CLI_GALLERY_PACKAGE_CHECK_CACHE
@@ -164,6 +165,15 @@ try {
 	await writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
 
 	await runInherit(npmBin, ['install', '--no-audit', '--no-fund', '--prefer-offline', '--fetch-retries=0'], { cwd: siteProjectRoot, env: npmEnv });
+	const cliGalleryBinPath = path.join(siteProjectRoot, 'node_modules', '.bin', process.platform === 'win32' ? 'cli-gallery.cmd' : 'cli-gallery');
+	await runInherit(cliGalleryBinPath, ['init', initializedSiteRoot], { cwd: tempRoot, env: npmEnv });
+	await Promise.all([
+		assertFileExists(path.join(initializedSiteRoot, 'package.json')),
+		assertFileExists(path.join(initializedSiteRoot, 'site', 'config.mjs')),
+		assertFileMissing(path.join(initializedSiteRoot, '.DS_Store')),
+		assertFileMissing(path.join(initializedSiteRoot, 'site', '.DS_Store')),
+	]);
+	await runInherit(npxBin, ['cli-gallery', 'engine:version'], { cwd: path.join(siteProjectRoot, 'site', 'images', 'work'), env: npmEnv });
 	await runInherit(npxBin, ['cli-gallery', 'doctor'], { cwd: path.join(siteProjectRoot, 'site', 'images', 'work'), env: npmEnv });
 	await runInherit(npxBin, ['cli-gallery', 'config:check'], { cwd: path.join(siteProjectRoot, 'site', 'images', 'work'), env: npmEnv });
 	await runInherit(npxBin, ['cli-gallery', 'content:check'], { cwd: siteProjectRoot, env: npmEnv });

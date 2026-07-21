@@ -14,6 +14,8 @@
     "content:sync": "cli-gallery content:sync",
     "site:public": "cli-gallery site:public",
     "images": "cli-gallery images",
+    "engine:update": "cli-gallery engine:update",
+    "engine:version": "cli-gallery engine:version",
     "build": "cli-gallery build",
     "build:local": "cli-gallery build:local",
     "deploy": "cli-gallery deploy",
@@ -23,6 +25,6 @@
     "preview": "cli-gallery preview"
   },
   "dependencies": {
-    "@janga/cli-gallery": "0.1.15"
+    "@janga/cli-gallery": "0.1.16"
   }
 }

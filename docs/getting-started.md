@@ -18,10 +18,10 @@ npx playwright install chromium
 
 ## Create A Site Repository
 
-Copy the starter into a new directory:
+Create a site from the starter:
 
 ```sh
-cp -R starters/basic ../my-gallery
+npx @janga/cli-gallery@latest init ../my-gallery
 cd ../my-gallery
 npm install
 npm run dev:local

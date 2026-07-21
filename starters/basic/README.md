@@ -16,6 +16,9 @@ public files under `site/public/`.
 Commit `package-lock.json` after the first install so GitHub Actions can use
 `npm ci`.
 
+Use `npm run engine:version` to inspect the installed engine and
+`npm run engine:update` to update it.
+
 Generic documentation lives in the `cli-gallery` repository:
 
 - `docs/getting-started.md`

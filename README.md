@@ -46,7 +46,7 @@ npm run package:check
 For a new site repository:
 
 ```sh
-cp -R starters/basic ../my-gallery
+npx @janga/cli-gallery@latest init ../my-gallery
 cd ../my-gallery
 npm install
 npm run dev:local

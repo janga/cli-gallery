@@ -18,6 +18,9 @@ Commands:
   content:sync           Rewrite section order and move misplaced images
   site:public            Sync site/public/ to public/
   images                 Generate optimized image variants
+  engine:update          Update @janga/cli-gallery in a site repository
+  engine:version         Show installed engine and Astro versions
+  init                   Create a new site project from the starter
   build                  Build the selected site
   build:local            Build and restart local dev server
   deploy                 Build and deploy committed branch
@@ -126,6 +129,12 @@ try {
 		await runScript('scripts/sync-site-public.mjs', rest);
 	} else if (command === 'images') {
 		await runScript('scripts/generate-images.mjs', rest);
+	} else if (command === 'engine:update') {
+		await runScript('scripts/update-engine.mjs', rest);
+	} else if (command === 'engine:version') {
+		await runScript('scripts/engine-version.mjs', rest);
+	} else if (command === 'init') {
+		await runScript('scripts/init-site.mjs', rest);
 	} else if (command === 'build') {
 		await runBuild();
 	} else if (command === 'build:local') {

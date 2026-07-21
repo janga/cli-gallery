@@ -58,6 +58,7 @@ In this repository:
 - `bin/cli-gallery.mjs` dispatches public CLI commands.
 - `scripts/` contains validation, image, local preview, deploy, and test tools.
 - `src/` contains the Astro renderer, components, styles, and content schema.
-- `starters/basic/` is copied to create a site repository.
+- `starters/basic/` is copied by `cli-gallery init <target-dir>` to create a
+  site repository.
 - `fixtures/basic/site/` is used by engine regression tests.
 - `site/` is the local dog-gallery demo used by default in this repository.
