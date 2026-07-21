@@ -27,6 +27,31 @@ site: {
 }
 ```
 
+## Typography
+
+### `typography.fontFamily`
+
+- Purpose: global CSS `font-family` stack used by site text and sticky
+  navigation.
+- Type: string containing a CSS font-family value.
+- Required: no.
+- Default: `Arial, 'Helvetica Neue', Helvetica, sans-serif`, matching the
+  engine's existing sticky-navigation font stack.
+- Validation: if set, it must be a non-empty string and must not contain
+  semicolons, braces, or line breaks.
+- Consequence: the value overrides the global `--font-sans` CSS variable for
+  the whole page. Section headings, body text, gallery captions, footer text,
+  and sticky navigation all inherit from that variable unless engine CSS gives a
+  more specific rule.
+
+Example:
+
+```js
+typography: {
+	fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+}
+```
+
 ## Navigation
 
 ### `navigation.smoothScroll`

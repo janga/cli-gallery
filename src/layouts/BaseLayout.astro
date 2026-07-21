@@ -20,6 +20,10 @@ const {
 const documentTitle = title;
 const canonicalUrl = projectConfig.site.url;
 const scrollBehavior = projectConfig.navigation.smoothScroll.enabled ? 'smooth' : 'auto';
+const documentStyle = [
+	`scroll-behavior: ${scrollBehavior}`,
+	`--font-sans: ${projectConfig.typography.fontFamily}`,
+].join('; ');
 const { buildInfo, copyrightMessage } = projectConfig.footer;
 const showBuildInfo = Boolean(buildInfo?.enabled);
 const buildTime = showBuildInfo
@@ -37,7 +41,7 @@ const footerStyle = [
 ---
 
 <!doctype html>
-<html lang="sv" style={`scroll-behavior: ${scrollBehavior}`}>
+<html lang="sv" style={documentStyle}>
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />

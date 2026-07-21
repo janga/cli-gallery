@@ -2,6 +2,9 @@ export default {
 	site: {
 		url: 'https://example.com/',
 	},
+	typography: {
+		fontFamily: "Arial, 'Helvetica Neue', Helvetica, sans-serif",
+	},
 	navigation: {
 		smoothScroll: {
 			enabled: true,

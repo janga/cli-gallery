@@ -35,6 +35,22 @@ const readOptionalString = (object, key, path) => {
 	return value.trim();
 };
 
+const readFontFamily = (object, key, path, fallback) => {
+	const value = object[key] ?? fallback;
+
+	if (typeof value !== 'string' || value.trim() === '') {
+		throw new Error(`${path}.${key} must be a non-empty CSS font-family value in ${siteConfigLabel}.`);
+	}
+
+	const normalizedValue = value.trim();
+
+	if (/[\n\r;{}]/.test(normalizedValue)) {
+		throw new Error(`${path}.${key} must not contain semicolons, braces, or line breaks in ${siteConfigLabel}.`);
+	}
+
+	return normalizedValue;
+};
+
 const readBoolean = (object, key, path, fallback) => {
 	const value = object[key] ?? fallback;
 
@@ -136,15 +152,21 @@ const readBuildInfo = (footer) => {
 
 const rawConfig = assertObject(siteConfig, 'default export');
 const rawSite = assertObject(rawConfig.site, 'site');
+const rawTypography = assertObject(rawConfig.typography ?? {}, 'typography');
 const rawNavigation = assertObject(rawConfig.navigation ?? {}, 'navigation');
 const rawFooter = assertObject(rawConfig.footer ?? {}, 'footer');
 const rawGithub = assertObject(rawConfig.github, 'github');
 const rawDeploy = assertObject(rawConfig.deploy ?? {}, 'deploy');
 const rawDeployWatch = assertObject(rawDeploy.watch ?? {}, 'deploy.watch');
 
+const defaultFontFamily = "Arial, 'Helvetica Neue', Helvetica, sans-serif";
+
 export const projectConfig = Object.freeze({
 	site: Object.freeze({
 		url: readUrl(rawSite, 'url', 'site'),
+	}),
+	typography: Object.freeze({
+		fontFamily: readFontFamily(rawTypography, 'fontFamily', 'typography', defaultFontFamily),
 	}),
 	navigation: Object.freeze({
 		smoothScroll: readSmoothScroll(rawNavigation),

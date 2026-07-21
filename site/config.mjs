@@ -5,6 +5,10 @@ export default {
 		// Public canonical URL for this site.
 		url: siteUrl,
 	},
+	typography: {
+		// CSS font-family stack used by the whole site, including sticky navigation.
+		fontFamily: "Arial, 'Helvetica Neue', Helvetica, sans-serif",
+	},
 	navigation: {
 		smoothScroll: {
 			// Set to false to make section links jump directly to the target anchor.

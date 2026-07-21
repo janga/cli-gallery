@@ -187,6 +187,10 @@ try {
 	);
 	await assertFileIncludes(
 		path.join(siteProjectRoot, 'dist', 'index.html'),
+		"--font-sans: Arial, 'Helvetica Neue', Helvetica, sans-serif",
+	);
+	await assertFileIncludes(
+		path.join(siteProjectRoot, 'dist', 'index.html'),
 		'--section-body-align-mobile: left',
 	);
 	await assertFileIncludes(
@@ -251,6 +255,21 @@ try {
 		['cli-gallery', 'build'],
 		{ cwd: siteProjectRoot, env: npmEnv },
 		'sections.0.presentation.heading.size',
+	);
+	const siteConfigPath = path.join(siteProjectRoot, 'site', 'config.mjs');
+	const siteConfig = await readFile(siteConfigPath, 'utf8');
+	await writeFile(
+		siteConfigPath,
+		siteConfig.replace(
+			'fontFamily: "Arial, \'Helvetica Neue\', Helvetica, sans-serif"',
+			'fontFamily: "Arial; color: red"',
+		),
+	);
+	await runExpectFailure(
+		npxBin,
+		['cli-gallery', 'config:check'],
+		{ cwd: siteProjectRoot, env: npmEnv },
+		'typography.fontFamily',
 	);
 
 	console.log('Package check passed.');

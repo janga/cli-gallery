@@ -40,8 +40,8 @@ Commit the generated `package-lock.json` after the first install.
 
 ## First Edits
 
-1. Edit `site/config.mjs` for the site's URL, GitHub repository, footer, and
-   deploy settings.
+1. Edit `site/config.mjs` for the site's URL, typography, GitHub repository,
+   footer, and deploy settings.
 2. Edit `site/content.md` for title, description, sections, text, gallery rows,
    alt text, and captions.
 3. Put source images under `site/images/<section-id>/`.
