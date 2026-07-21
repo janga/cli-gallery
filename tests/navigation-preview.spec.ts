@@ -32,7 +32,7 @@ const viewports = [
 	{ name: 'desktop-wide', size: { width: 1980, height: 1200 }, hasTouch: false, isMobile: false },
 ];
 const hiddenHeadingTolerance = -4;
-const maximumAnchorGap = 120;
+const maximumAnchorGap = 2;
 const stableSampleCount = 5;
 
 const getPreviewRounds = () => {

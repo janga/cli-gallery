@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 const mobileViewport = { width: 393, height: 852 };
 const desktopViewport = { width: 1280, height: 900 };
-const maximumAnchorGap = 80;
+const maximumAnchorGap = 2;
 const maximumAnchorWait = 7_000;
 const minimumFullscreenSafeTextTop = 24;
 
@@ -11,6 +11,8 @@ type AnchorMeasurement = {
 	headerBottom: number;
 	headingTop: number;
 	gap: number;
+	scrollBottomGap: number;
+	scrollY: number;
 };
 
 const getNavTargets = async (page) => page.locator('.section-nav a').evaluateAll((links) => (
@@ -31,12 +33,19 @@ const measureAnchor = async (page, sectionId: string): Promise<AnchorMeasurement
 
 	const headerBottom = header.getBoundingClientRect().bottom;
 	const headingTop = heading.getBoundingClientRect().top;
+	const maxScrollY = Math.max(
+		0,
+		document.documentElement.scrollHeight - window.innerHeight,
+		document.body.scrollHeight - window.innerHeight,
+	);
 
 	return {
 		hash: window.location.hash,
 		headerBottom,
 		headingTop,
 		gap: headingTop - headerBottom,
+		scrollBottomGap: maxScrollY - window.scrollY,
+		scrollY: window.scrollY,
 	};
 }, sectionId);
 
@@ -61,7 +70,17 @@ const waitForAnchorPosition = async (page, sectionId: string) => {
 			const headingTop = heading.getBoundingClientRect().top;
 			const gap = headingTop - headerBottom;
 
-			return window.location.hash === `#${id}` && gap >= -1 && gap <= maximumGap;
+			const maxScrollY = Math.max(
+				0,
+				document.documentElement.scrollHeight - window.innerHeight,
+				document.body.scrollHeight - window.innerHeight,
+			);
+			const atDocumentTop = window.scrollY <= 2;
+			const atDocumentBottom = maxScrollY - window.scrollY <= 2;
+
+			return window.location.hash === `#${id}`
+				&& gap >= -1
+				&& (gap <= maximumGap || atDocumentTop || atDocumentBottom);
 		},
 		{ id: sectionId, maximumGap: maximumAnchorGap },
 		{ timeout: maximumAnchorWait },
@@ -112,7 +131,9 @@ for (const scenario of [
 				const measurement = await measureAnchor(page, sectionId);
 				expect(measurement.hash, target.label).toBe(target.hash);
 				expect(measurement.gap, target.label).toBeGreaterThanOrEqual(-1);
-				expect(measurement.gap, target.label).toBeLessThanOrEqual(maximumAnchorGap);
+				if (measurement.scrollY > 2 && measurement.scrollBottomGap > 2) {
+					expect(measurement.gap, target.label).toBeLessThanOrEqual(maximumAnchorGap);
+				}
 			}
 		});
 
@@ -127,16 +148,22 @@ for (const scenario of [
 				const measurement = await measureAnchor(page, sectionId);
 				expect(measurement.hash, target.label).toBe(target.hash);
 				expect(measurement.gap, target.label).toBeGreaterThanOrEqual(-1);
-				expect(measurement.gap, target.label).toBeLessThanOrEqual(maximumAnchorGap);
+				if (measurement.scrollY > 2 && measurement.scrollBottomGap > 2) {
+					expect(measurement.gap, target.label).toBeLessThanOrEqual(maximumAnchorGap);
+				}
 			}
 		});
 
-		test('keeps the target aligned when layout above it changes during smooth scroll', async ({ page }) => {
+	test('keeps the target aligned when layout above it changes during smooth scroll', async ({ page }) => {
 			await openSite(page);
+			const targets = await getNavTargets(page);
+			const target = targets[Math.floor(targets.length / 2)];
+			if (!target) throw new Error('The fixture must provide at least three navigation targets.');
+			const sectionId = target.hash.slice(1);
 
-			await page.evaluate(() => {
+			await page.evaluate((id) => {
 				window.setTimeout(() => {
-					const target = document.querySelector('#min-konst');
+					const target = document.getElementById(id);
 					const spacer = document.createElement('div');
 
 					spacer.id = 'scroll-shift-probe';
@@ -144,13 +171,13 @@ for (const scenario of [
 					spacer.style.pointerEvents = 'none';
 					target?.before(spacer);
 				}, 500);
-			});
+			}, sectionId);
 
-			await page.locator('.section-nav a[href="#min-konst"]').click();
-			await waitForAnchorPosition(page, 'min-konst');
+			await page.locator(`.section-nav a[href="${target.hash}"]`).click();
+			await waitForAnchorPosition(page, sectionId);
 
-			const measurement = await measureAnchor(page, 'min-konst');
-			expect(measurement.hash).toBe('#min-konst');
+			const measurement = await measureAnchor(page, sectionId);
+			expect(measurement.hash).toBe(target.hash);
 			expect(measurement.gap).toBeGreaterThanOrEqual(-1);
 			expect(measurement.gap).toBeLessThanOrEqual(maximumAnchorGap);
 		});
@@ -182,12 +209,15 @@ test.describe('section navigation without JavaScript', () => {
 		viewport: mobileViewport,
 	});
 
-	test('keeps hash links usable as a fallback', async ({ page }) => {
+test('keeps hash links usable as a fallback', async ({ page }) => {
 		await openSite(page);
-		await page.locator('.section-nav a[href="#om-mig"]').click();
+		const target = (await getNavTargets(page))[1];
+		if (!target) throw new Error('The fixture must provide at least two navigation targets.');
+		const sectionId = target.hash.slice(1);
+		await page.locator(`.section-nav a[href="${target.hash}"]`).click();
 
-		const measurement = await measureAnchor(page, 'om-mig');
-		expect(measurement.hash).toBe('#om-mig');
+		const measurement = await measureAnchor(page, sectionId);
+		expect(measurement.hash).toBe(target.hash);
 		expect(measurement.gap).toBeGreaterThanOrEqual(-1);
 	});
 });

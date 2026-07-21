@@ -1,4 +1,88 @@
 {
+  "photo-of-a-black-dog.jpg": {
+    "outputVersion": 2,
+    "sourceHash": "5cf614d2863ca8f86b6162c7b477fd2690adbc101816206c9e675bf36d9962d0",
+    "width": 960,
+    "height": 1600,
+    "variants": [
+      {
+        "src": "/images/generated/black-dogs/photo-of-a-black-dog-5cf614d2-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/images/generated/black-dogs/photo-of-a-black-dog-5cf614d2-768.webp",
+        "width": 768
+      },
+      {
+        "src": "/images/generated/black-dogs/photo-of-a-black-dog-5cf614d2-960.webp",
+        "width": 960
+      }
+    ]
+  },
+  "smiling-black-dog.jpg": {
+    "outputVersion": 2,
+    "sourceHash": "0adcfa4d93310878d9af910d094744b078698c062f276706a556dea97023f2ba",
+    "width": 1944,
+    "height": 1532,
+    "variants": [
+      {
+        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-768.webp",
+        "width": 768
+      },
+      {
+        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-1080.webp",
+        "width": 1080
+      },
+      {
+        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-1440.webp",
+        "width": 1440
+      },
+      {
+        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-1920.webp",
+        "width": 1920
+      },
+      {
+        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-1944.webp",
+        "width": 1944
+      }
+    ]
+  },
+  "brown-dog.jpg": {
+    "outputVersion": 2,
+    "sourceHash": "50ef114e49ae48491c015157b4a25f4f1fd69140170fe6d4202c551858c3e03d",
+    "width": 3939,
+    "height": 2626,
+    "variants": [
+      {
+        "src": "/images/generated/brown-dogs/brown-dog-50ef114e-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/images/generated/brown-dogs/brown-dog-50ef114e-768.webp",
+        "width": 768
+      },
+      {
+        "src": "/images/generated/brown-dogs/brown-dog-50ef114e-1080.webp",
+        "width": 1080
+      },
+      {
+        "src": "/images/generated/brown-dogs/brown-dog-50ef114e-1440.webp",
+        "width": 1440
+      },
+      {
+        "src": "/images/generated/brown-dogs/brown-dog-50ef114e-1920.webp",
+        "width": 1920
+      },
+      {
+        "src": "/images/generated/brown-dogs/brown-dog-50ef114e-3939.webp",
+        "width": 3939
+      }
+    ]
+  },
   "dog-accompanies-master.jpg": {
     "outputVersion": 2,
     "sourceHash": "7ef804d5ebe27724409f4ffa94389c7b1102c2c8bb9c1dae29ecbd4c56e61af9",
@@ -6,80 +90,56 @@
     "height": 1800,
     "variants": [
       {
-        "src": "/images/generated/dogs/dog-accompanies-master-7ef804d5-480.webp",
+        "src": "/images/generated/brown-dogs/dog-accompanies-master-7ef804d5-480.webp",
         "width": 480
       },
       {
-        "src": "/images/generated/dogs/dog-accompanies-master-7ef804d5-768.webp",
+        "src": "/images/generated/brown-dogs/dog-accompanies-master-7ef804d5-768.webp",
         "width": 768
       },
       {
-        "src": "/images/generated/dogs/dog-accompanies-master-7ef804d5-1080.webp",
+        "src": "/images/generated/brown-dogs/dog-accompanies-master-7ef804d5-1080.webp",
         "width": 1080
       },
       {
-        "src": "/images/generated/dogs/dog-accompanies-master-7ef804d5-1440.webp",
+        "src": "/images/generated/brown-dogs/dog-accompanies-master-7ef804d5-1440.webp",
         "width": 1440
       },
       {
-        "src": "/images/generated/dogs/dog-accompanies-master-7ef804d5-1920.webp",
+        "src": "/images/generated/brown-dogs/dog-accompanies-master-7ef804d5-1920.webp",
         "width": 1920
       },
       {
-        "src": "/images/generated/dogs/dog-accompanies-master-7ef804d5-2400.webp",
+        "src": "/images/generated/brown-dogs/dog-accompanies-master-7ef804d5-2400.webp",
         "width": 2400
       }
     ]
   },
-  "photo-of-a-dog.jpg": {
+  "golden-retriever.jpg": {
     "outputVersion": 2,
-    "sourceHash": "5cf614d2863ca8f86b6162c7b477fd2690adbc101816206c9e675bf36d9962d0",
-    "width": 960,
-    "height": 1600,
+    "sourceHash": "f797fd880d6c3b112ceb3408f468fbeaf442efc792f935fd6c9954b812fdc838",
+    "width": 1600,
+    "height": 1200,
     "variants": [
       {
-        "src": "/images/generated/dogs/photo-of-a-dog-5cf614d2-480.webp",
+        "src": "/images/generated/golden-dogs/golden-retriever-f797fd88-480.webp",
         "width": 480
       },
       {
-        "src": "/images/generated/dogs/photo-of-a-dog-5cf614d2-768.webp",
+        "src": "/images/generated/golden-dogs/golden-retriever-f797fd88-768.webp",
         "width": 768
       },
       {
-        "src": "/images/generated/dogs/photo-of-a-dog-5cf614d2-960.webp",
-        "width": 960
-      }
-    ]
-  },
-  "smiling-dog.jpg": {
-    "outputVersion": 2,
-    "sourceHash": "0adcfa4d93310878d9af910d094744b078698c062f276706a556dea97023f2ba",
-    "width": 1944,
-    "height": 1532,
-    "variants": [
-      {
-        "src": "/images/generated/dogs/smiling-dog-0adcfa4d-480.webp",
-        "width": 480
-      },
-      {
-        "src": "/images/generated/dogs/smiling-dog-0adcfa4d-768.webp",
-        "width": 768
-      },
-      {
-        "src": "/images/generated/dogs/smiling-dog-0adcfa4d-1080.webp",
+        "src": "/images/generated/golden-dogs/golden-retriever-f797fd88-1080.webp",
         "width": 1080
       },
       {
-        "src": "/images/generated/dogs/smiling-dog-0adcfa4d-1440.webp",
+        "src": "/images/generated/golden-dogs/golden-retriever-f797fd88-1440.webp",
         "width": 1440
       },
       {
-        "src": "/images/generated/dogs/smiling-dog-0adcfa4d-1920.webp",
-        "width": 1920
-      },
-      {
-        "src": "/images/generated/dogs/smiling-dog-0adcfa4d-1944.webp",
-        "width": 1944
+        "src": "/images/generated/golden-dogs/golden-retriever-f797fd88-1600.webp",
+        "width": 1600
       }
     ]
   },
@@ -90,28 +150,52 @@
     "height": 1932,
     "variants": [
       {
-        "src": "/images/generated/dogs/toller-puppy-a2a8fbc0-480.webp",
+        "src": "/images/generated/golden-dogs/toller-puppy-a2a8fbc0-480.webp",
         "width": 480
       },
       {
-        "src": "/images/generated/dogs/toller-puppy-a2a8fbc0-768.webp",
+        "src": "/images/generated/golden-dogs/toller-puppy-a2a8fbc0-768.webp",
         "width": 768
       },
       {
-        "src": "/images/generated/dogs/toller-puppy-a2a8fbc0-1080.webp",
+        "src": "/images/generated/golden-dogs/toller-puppy-a2a8fbc0-1080.webp",
         "width": 1080
       },
       {
-        "src": "/images/generated/dogs/toller-puppy-a2a8fbc0-1440.webp",
+        "src": "/images/generated/golden-dogs/toller-puppy-a2a8fbc0-1440.webp",
         "width": 1440
       },
       {
-        "src": "/images/generated/dogs/toller-puppy-a2a8fbc0-1920.webp",
+        "src": "/images/generated/golden-dogs/toller-puppy-a2a8fbc0-1920.webp",
         "width": 1920
       },
       {
-        "src": "/images/generated/dogs/toller-puppy-a2a8fbc0-2576.webp",
+        "src": "/images/generated/golden-dogs/toller-puppy-a2a8fbc0-2576.webp",
         "width": 2576
+      }
+    ]
+  },
+  "white-cute-dog.jpg": {
+    "outputVersion": 2,
+    "sourceHash": "077a06891d97eafb4593cfcaa5c9b04fdb1e3a6206d56acd4ebd3eadb83356bf",
+    "width": 1277,
+    "height": 1060,
+    "variants": [
+      {
+        "src": "/images/generated/white-dogs/white-cute-dog-077a0689-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/images/generated/white-dogs/white-cute-dog-077a0689-768.webp",
+        "width": 768
+      },
+      {
+        "src": "/images/generated/white-dogs/white-cute-dog-077a0689-1080.webp",
+        "width": 1080
+      },
+      {
+        "src": "/images/generated/white-dogs/white-cute-dog-077a0689-1277.webp",
+        "width": 1277
       }
     ]
   }

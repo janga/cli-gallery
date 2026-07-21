@@ -42,8 +42,8 @@ const navigationStyle = [
 	const sections = Array.from(document.querySelectorAll('.site-section'));
 	const links = Array.from(document.querySelectorAll('.section-nav a'));
 	const smoothScrollConfig = JSON.parse(siteTop?.getAttribute('data-smooth-scroll') ?? '{}');
-	const anchorPadding = 14;
-	const maximumAnchorGap = 80;
+	const anchorPadding = 0;
+	const maximumAnchorGap = 2;
 	const anchorCorrectionDelays = [120, 320, 700, 1_000, 2_000];
 	const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 	const minimumScrollDuration = smoothScrollConfig.minimumDurationMs;
@@ -68,6 +68,8 @@ const navigationStyle = [
 		const id = hash.replace(/^#/, '');
 		return sections.find((section) => section.id === id);
 	};
+
+	const getSectionHeading = (section) => section?.querySelector('h1, h2');
 
 	const clearRecentAnchor = () => {
 		recentAnchorSection = null;
@@ -107,11 +109,13 @@ const navigationStyle = [
 
 	const getSectionScrollTop = (section) => {
 		if (!(section instanceof HTMLElement)) return;
+		const heading = getSectionHeading(section);
+		if (!(heading instanceof HTMLElement)) return;
 
 		const offset = setAnchorOffset();
 		if (!offset) return;
 
-		return Math.max(0, section.getBoundingClientRect().top + window.scrollY - offset);
+		return Math.max(0, heading.getBoundingClientRect().top + window.scrollY - offset);
 	};
 
 	const jumpTo = (top) => {
@@ -277,7 +281,7 @@ const navigationStyle = [
 		if (performance.now() > correctAnchorUntil) return;
 		if (window.location.hash !== `#${recentAnchorSection.id}`) return;
 
-		const heading = recentAnchorSection.querySelector('h1, h2');
+		const heading = getSectionHeading(recentAnchorSection);
 		if (!(siteTop instanceof HTMLElement) || !(heading instanceof HTMLElement)) return;
 
 		const headerBottom = siteTop.getBoundingClientRect().bottom;

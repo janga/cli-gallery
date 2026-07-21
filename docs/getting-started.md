@@ -57,3 +57,7 @@ npm run build
 
 Read [Site Structure](site-structure.md), [Content](content.md), and
 [Configuration](configuration.md) before publishing a real site.
+
+To change the site's font, set `typography.fontFamily` in `site/config.mjs`.
+See [`typography.fontFamily`](configuration.md#typographyfontfamily) for the
+accepted format and default value.

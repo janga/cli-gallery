@@ -9,10 +9,11 @@ For a site maintainer:
 
 1. [Getting Started](getting-started.md)
 2. [Site Structure](site-structure.md)
-3. [Content](content.md)
-4. [Images And Metadata](images-and-metadata.md)
-5. [Local Development](local-development.md)
-6. [Publishing](publishing.md)
+3. [Configuration](configuration.md)
+4. [Content](content.md)
+5. [Images And Metadata](images-and-metadata.md)
+6. [Local Development](local-development.md)
+7. [Publishing](publishing.md)
 
 For a developer integrating or updating the engine:
 
@@ -24,7 +25,8 @@ For a developer integrating or updating the engine:
 For a quick reference:
 
 - [Configuration](configuration.md) describes every supported
-  `site/config.mjs` field, validation rule, and default.
+  `site/config.mjs` field, including `typography.fontFamily`, validation rule,
+  and default.
 - [Commands](commands.md) lists the public CLI surface and starter npm scripts.
 - [Site Structure](site-structure.md) separates versioned source files from
   generated build output.

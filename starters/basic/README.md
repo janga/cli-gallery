@@ -9,9 +9,11 @@ npm install
 npm run dev:local
 ```
 
-Edit site-specific content in `site/content.md`, technical settings in
-`site/config.mjs`, source images under `site/images/<section-id>/`, and static
-public files under `site/public/`.
+Edit site-specific content in `site/content.md`, technical settings such as URL
+and typography in `site/config.mjs`, source images under
+`site/images/<section-id>/`, and static public files under `site/public/`.
+
+The site font is configured with `typography.fontFamily` in `site/config.mjs`.
 
 Commit `package-lock.json` after the first install so GitHub Actions can use
 `npm ci`.
