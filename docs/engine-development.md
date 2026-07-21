@@ -59,6 +59,10 @@ builds the installed site, and verifies selected rendered output and validation
 failures.
 
 It needs network access when npm dependencies are not already cached.
+The check uses a reusable npm cache at
+`node_modules/.cache/cli-gallery-package-check-npm` and runs npm with
+`--prefer-offline` so repeat runs do not redownload dependencies. Set
+`CLI_GALLERY_PACKAGE_CHECK_CACHE=/path/to/cache` to use another cache.
 
 ## Manual npm Release
 

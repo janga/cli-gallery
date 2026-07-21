@@ -23,6 +23,6 @@
     "preview": "cli-gallery preview"
   },
   "dependencies": {
-    "@janga/cli-gallery": "0.1.14"
+    "@janga/cli-gallery": "0.1.15"
   }
 }

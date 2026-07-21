@@ -82,9 +82,14 @@ const tempRoot = await mkdtemp(path.join(tmpdir(), 'cli-gallery-package-check-')
 const packDir = path.join(tempRoot, 'pack');
 const unpackDir = path.join(tempRoot, 'unpack');
 const siteProjectRoot = path.join(tempRoot, 'site-project');
+const npmCachePath = path.resolve(
+	repoRoot,
+	process.env.CLI_GALLERY_PACKAGE_CHECK_CACHE
+		?? path.join('node_modules', '.cache', 'cli-gallery-package-check-npm'),
+);
 const npmEnv = {
 	...process.env,
-	npm_config_cache: path.join(tempRoot, '.npm-cache'),
+	npm_config_cache: npmCachePath,
 };
 
 const assertFileExists = async (filePath) => {
@@ -123,6 +128,7 @@ const assertFileIncludes = async (filePath, expectedText) => {
 
 try {
 	await mkdir(packDir, { recursive: true });
+	await mkdir(npmCachePath, { recursive: true });
 	const packResult = await run(npmBin, ['pack', '--pack-destination', packDir], {
 		env: npmEnv,
 	});
@@ -157,7 +163,7 @@ try {
 	packageJson.dependencies['@janga/cli-gallery'] = tarballPath;
 	await writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
 
-	await runInherit(npmBin, ['install', '--no-audit', '--no-fund'], { cwd: siteProjectRoot, env: npmEnv });
+	await runInherit(npmBin, ['install', '--no-audit', '--no-fund', '--prefer-offline', '--fetch-retries=0'], { cwd: siteProjectRoot, env: npmEnv });
 	await runInherit(npxBin, ['cli-gallery', 'doctor'], { cwd: path.join(siteProjectRoot, 'site', 'images', 'work'), env: npmEnv });
 	await runInherit(npxBin, ['cli-gallery', 'config:check'], { cwd: path.join(siteProjectRoot, 'site', 'images', 'work'), env: npmEnv });
 	await runInherit(npxBin, ['cli-gallery', 'content:check'], { cwd: siteProjectRoot, env: npmEnv });

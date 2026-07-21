@@ -2,7 +2,7 @@
   "name": "@janga/cli-gallery",
   "description": "A command-line publishing workflow for simple static galleries.",
   "type": "module",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
     "cli"
   ],
   "bin": {
-    "cli-gallery": "./bin/cli-gallery.mjs"
+    "cli-gallery": "bin/cli-gallery.mjs"
   },
   "files": [
     "astro.config.mjs",
