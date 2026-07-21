@@ -39,7 +39,14 @@ try {
 	assert.notEqual(updateFromEngineResult.status, 0);
 	assert.match(updateFromEngineResult.stderr, /must be run from a site repository/);
 
-	console.log('ok - engine commands report versions, initialize sites, and guard engine self-updates');
+	const releaseHelpResult = spawnSync(process.execPath, [path.join(repoRoot, 'scripts', 'release.mjs'), 'patch', '--help'], {
+		cwd: repoRoot,
+		encoding: 'utf8',
+	});
+	assert.equal(releaseHelpResult.status, 0, releaseHelpResult.stderr || releaseHelpResult.stdout);
+	assert.match(releaseHelpResult.stdout, /Usage: node scripts\/release\.mjs/);
+
+	console.log('ok - engine commands report versions, initialize sites, guard engine self-updates, and document release usage');
 } finally {
 	await rm(tempRoot, { force: true, recursive: true });
 }

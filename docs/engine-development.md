@@ -64,25 +64,32 @@ The check uses a reusable npm cache at
 `--prefer-offline` so repeat runs do not redownload dependencies. Set
 `CLI_GALLERY_PACKAGE_CHECK_CACHE=/path/to/cache` to use another cache.
 
-## Manual npm Release
+## npm Release
 
-The npm package is published under the `@janga` scope. For a manual public
-release, set the intended version in `package.json` and `package-lock.json`,
-verify the package contents, then publish from this repository:
-
-```sh
-npm pack --dry-run
-npm run release:publish
-```
-
-The same publish shortcut can be started from any directory:
+The npm package is published under the `@janga` scope. Choose the release type
+when starting a release; the command runs `npm test`, requires a clean working
+tree before and after the checks, updates `package.json` and `package-lock.json`,
+creates the release commit and Git tag, publishes to npm, then pushes the commit
+and tag.
 
 ```sh
-npm --prefix /Users/jangarefelt/Projects/cli-gallery run release:publish
+npm run release:patch
 ```
 
-After publication, site repositories should depend on the exact published npm
-version and commit their updated `package-lock.json`.
+Use `patch` for backwards-compatible fixes and maintenance changes. Use `minor`
+for backwards-compatible features and `major` for incompatible changes:
+
+```sh
+npm run release:minor
+npm run release:major
+```
+
+The release command deliberately does not run GitHub Pages deployment monitoring.
+If npm publication fails, it stops before pushing; the local version commit and
+tag remain available for inspection or recovery.
+
+After publication, update site repositories to the exact published npm version
+and commit their updated `package-lock.json`.
 
 ## Rendering Notes
 
