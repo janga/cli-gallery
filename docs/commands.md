@@ -84,9 +84,11 @@ npm run preview
 - `images`: generates WebP variants and writes
   `site/.cli-gallery/generated-images.json`.
 - `engine:update [version|latest]`: updates the site repository's
-  `@janga/cli-gallery` dependency with `npm install --save-exact`, then runs
-  config/content/build checks. Use `--skip-checks` to update package files only.
-  Unless npm already has a cache configured, it uses
+  `@janga/cli-gallery` dependency with `npm install --save-exact`, normalizes
+  `package-lock.json` for the pinned GitHub Actions Linux/npm environment, and
+  verifies it with `npm ci --dry-run` before running config/content/build checks.
+  Use `--skip-checks` to skip only the site checks; lockfile normalization and
+  CI verification still run. Unless npm already has a cache configured, it uses
   `node_modules/.cache/cli-gallery-npm` in the site project.
 - `engine:version [--latest]`: prints the declared site dependency, installed
   engine version, engine root, Astro dependency, and installed Astro version.

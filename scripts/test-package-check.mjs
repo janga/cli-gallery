@@ -155,6 +155,10 @@ try {
 		assertFileExists(path.join(packagedStarterRoot, 'site', 'images', 'work', '.gitkeep')),
 		assertFileExists(path.join(packagedStarterRoot, 'site', 'public', 'robots.txt')),
 	]);
+	await assertFileIncludes(
+		path.join(packagedStarterRoot, '.github', 'workflows', 'deploy.yml'),
+		'node-version: 24.18.0',
+	);
 	await cp(packagedStarterRoot, siteProjectRoot, {
 		recursive: true,
 	});

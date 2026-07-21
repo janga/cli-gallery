@@ -3,6 +3,7 @@ import { mkdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { runInherit } from './lib/run-command.mjs';
+import { normalizeCiLockfile, verifyCiLockfile } from './lib/ci-lockfile.mjs';
 import {
 	siteProjectRoot,
 	siteProjectRootLabel,
@@ -83,6 +84,22 @@ await runInherit(npmBin, [
 	'--fetch-retries=0',
 ], {
 	cwd: siteProjectRoot,
+	env: {
+		...process.env,
+		npm_config_cache: npmCachePath,
+	},
+});
+
+console.log('Normalizing package-lock.json for the GitHub Actions Linux npm environment.');
+await normalizeCiLockfile(siteProjectRoot, {
+	env: {
+		...process.env,
+		npm_config_cache: npmCachePath,
+	},
+});
+
+console.log('Verifying package-lock.json with a clean GitHub Actions npm install.');
+await verifyCiLockfile(siteProjectRoot, {
 	env: {
 		...process.env,
 		npm_config_cache: npmCachePath,

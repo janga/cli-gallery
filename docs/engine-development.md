@@ -64,6 +64,17 @@ The check uses a reusable npm cache at
 `--prefer-offline` so repeat runs do not redownload dependencies. Set
 `CLI_GALLERY_PACKAGE_CHECK_CACHE=/path/to/cache` to use another cache.
 
+## CI Lockfiles
+
+Site repositories are developed on different operating systems but deployed on
+GitHub Actions Linux. `engine:update` therefore normalizes `package-lock.json`
+with npm 11.16.0 for Linux x64 glibc and verifies a clean install before it runs
+the site checks. The starter workflow pins Node 24.18.0, which provides the
+same npm version.
+
+`npm run test:ci-lockfile` recreates and repairs the optional npm peer-dependency
+case that previously caused GitHub Actions `npm ci` failures.
+
 ## npm Release
 
 The npm package is published under the `@janga` scope. Choose the release type
