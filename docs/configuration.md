@@ -27,6 +27,30 @@ site: {
 }
 ```
 
+## Gallery
+
+### `gallery.width`
+
+- Purpose: maximum rendered width for gallery images, gallery captions, and
+  left- or right-aligned section text that is intended to line up with gallery
+  edges.
+- Type: string containing a simple positive CSS length.
+- Required: no.
+- Default: `900px`.
+- Validation: if set, it must be a positive number followed by one of `px`,
+  `rem`, `em`, `vw`, `vh`, `vmin`, `vmax`, `ch`, or `%`.
+- Consequence: the value overrides the global `--gallery-width` CSS variable.
+  Landscape images fill this width. Portrait images keep their proportions and
+  may render narrower because they are constrained by image height.
+
+Example:
+
+```js
+gallery: {
+	width: '900px',
+}
+```
+
 ## Typography
 
 ### `typography.fontFamily`

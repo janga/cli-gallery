@@ -20,6 +20,7 @@ try {
 
 	console.log('Config check passed.');
 	console.log(`Site URL: ${projectConfig.site.url}`);
+	console.log(`Gallery width: ${projectConfig.gallery.width}`);
 	console.log(`Font family: ${projectConfig.typography.fontFamily}`);
 	console.log(`GitHub repo: ${projectConfig.github.repo}`);
 	console.log(`Deploy branch: ${projectConfig.github.branch}`);

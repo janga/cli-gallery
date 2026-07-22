@@ -23,6 +23,7 @@ const scrollBehavior = projectConfig.navigation.smoothScroll.enabled ? 'smooth' 
 const documentStyle = [
 	`scroll-behavior: ${scrollBehavior}`,
 	`--font-sans: ${projectConfig.typography.fontFamily}`,
+	`--gallery-width: ${projectConfig.gallery.width}`,
 ].join('; ');
 const { buildInfo, copyrightMessage } = projectConfig.footer;
 const showBuildInfo = Boolean(buildInfo?.enabled);

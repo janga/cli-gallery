@@ -5,6 +5,10 @@ export default {
 		// Public canonical URL for this site.
 		url: siteUrl,
 	},
+	gallery: {
+		// Maximum rendered gallery width for landscape images and aligned text.
+		width: '900px',
+	},
 	typography: {
 		// CSS font-family stack used by the whole site, including sticky navigation.
 		fontFamily: "Arial, 'Helvetica Neue', Helvetica, sans-serif",

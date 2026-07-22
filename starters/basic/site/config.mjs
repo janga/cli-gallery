@@ -2,6 +2,9 @@ export default {
 	site: {
 		url: 'https://example.com/',
 	},
+	gallery: {
+		width: '900px',
+	},
 	typography: {
 		fontFamily: "Arial, 'Helvetica Neue', Helvetica, sans-serif",
 	},

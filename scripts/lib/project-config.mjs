@@ -51,6 +51,22 @@ const readFontFamily = (object, key, path, fallback) => {
 	return normalizedValue;
 };
 
+const readCssLength = (object, key, path, fallback) => {
+	const value = object[key] ?? fallback;
+
+	if (typeof value !== 'string' || value.trim() === '') {
+		throw new Error(`${path}.${key} must be a non-empty CSS length in ${siteConfigLabel}.`);
+	}
+
+	const normalizedValue = value.trim();
+
+	if (!/^(?:\d+|\d*\.\d+)(?:px|rem|em|vw|vh|vmin|vmax|ch|%)$/.test(normalizedValue) || parseFloat(normalizedValue) <= 0) {
+		throw new Error(`${path}.${key} must be a CSS length such as "900px", "56rem", or "90%" in ${siteConfigLabel}.`);
+	}
+
+	return normalizedValue;
+};
+
 const readBoolean = (object, key, path, fallback) => {
 	const value = object[key] ?? fallback;
 
@@ -152,6 +168,7 @@ const readBuildInfo = (footer) => {
 
 const rawConfig = assertObject(siteConfig, 'default export');
 const rawSite = assertObject(rawConfig.site, 'site');
+const rawGallery = assertObject(rawConfig.gallery ?? {}, 'gallery');
 const rawTypography = assertObject(rawConfig.typography ?? {}, 'typography');
 const rawNavigation = assertObject(rawConfig.navigation ?? {}, 'navigation');
 const rawFooter = assertObject(rawConfig.footer ?? {}, 'footer');
@@ -164,6 +181,9 @@ const defaultFontFamily = "Arial, 'Helvetica Neue', Helvetica, sans-serif";
 export const projectConfig = Object.freeze({
 	site: Object.freeze({
 		url: readUrl(rawSite, 'url', 'site'),
+	}),
+	gallery: Object.freeze({
+		width: readCssLength(rawGallery, 'width', 'gallery', '900px'),
 	}),
 	typography: Object.freeze({
 		fontFamily: readFontFamily(rawTypography, 'fontFamily', 'typography', defaultFontFamily),

@@ -21,8 +21,8 @@ belong in each site repository. For example, Karin Walde's site lives in
 A `cli-gallery` site is file-driven:
 
 1. A site repository depends on this package.
-2. The site keeps technical settings, including the global font family, in
-   `site/config.mjs`.
+2. The site keeps technical settings, including gallery width and the global
+   font family, in `site/config.mjs`.
 3. The site keeps page content, section order, gallery rows, alt text, and
    captions in `site/content.md`.
 4. Source images live under `site/images/<section-id>/`.
@@ -69,6 +69,7 @@ Actions use the same engine version.
 - Understand required site files: [Site Structure](docs/site-structure.md)
 - Edit sections and galleries: [Content](docs/content.md)
 - Configure a site: [Configuration](docs/configuration.md)
+- Set gallery width: [`gallery.width`](docs/configuration.md#gallerywidth)
 - Set the site font: [`typography.fontFamily`](docs/configuration.md#typographyfontfamily)
 - Look up CLI and npm scripts: [Commands](docs/commands.md)
 - Understand generated images: [Images And Metadata](docs/images-and-metadata.md)
