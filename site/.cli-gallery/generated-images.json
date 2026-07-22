@@ -1,4 +1,32 @@
 {
+  "black-puppy-meadow.png": {
+    "outputVersion": 2,
+    "sourceHash": "7255e3d9148c1ded01ae6ae6809b9a8261b553a1516d3f8f4de0554bc321f652",
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      {
+        "src": "/images/generated/black-dogs/black-puppy-meadow-7255e3d9-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/images/generated/black-dogs/black-puppy-meadow-7255e3d9-768.webp",
+        "width": 768
+      },
+      {
+        "src": "/images/generated/black-dogs/black-puppy-meadow-7255e3d9-1080.webp",
+        "width": 1080
+      },
+      {
+        "src": "/images/generated/black-dogs/black-puppy-meadow-7255e3d9-1440.webp",
+        "width": 1440
+      },
+      {
+        "src": "/images/generated/black-dogs/black-puppy-meadow-7255e3d9-1536.webp",
+        "width": 1536
+      }
+    ]
+  },
   "photo-of-a-black-dog.jpg": {
     "outputVersion": 2,
     "sourceHash": "5cf614d2863ca8f86b6162c7b477fd2690adbc101816206c9e675bf36d9962d0",
@@ -16,38 +44,6 @@
       {
         "src": "/images/generated/black-dogs/photo-of-a-black-dog-5cf614d2-960.webp",
         "width": 960
-      }
-    ]
-  },
-  "smiling-black-dog.jpg": {
-    "outputVersion": 2,
-    "sourceHash": "0adcfa4d93310878d9af910d094744b078698c062f276706a556dea97023f2ba",
-    "width": 1944,
-    "height": 1532,
-    "variants": [
-      {
-        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-480.webp",
-        "width": 480
-      },
-      {
-        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-768.webp",
-        "width": 768
-      },
-      {
-        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-1080.webp",
-        "width": 1080
-      },
-      {
-        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-1440.webp",
-        "width": 1440
-      },
-      {
-        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-1920.webp",
-        "width": 1920
-      },
-      {
-        "src": "/images/generated/black-dogs/smiling-black-dog-0adcfa4d-1944.webp",
-        "width": 1944
       }
     ]
   },
@@ -196,6 +192,34 @@
       {
         "src": "/images/generated/white-dogs/white-cute-dog-077a0689-1277.webp",
         "width": 1277
+      }
+    ]
+  },
+  "white-puppy-garden.png": {
+    "outputVersion": 2,
+    "sourceHash": "d3ab2ca04fb37dfbf010e7f9f3adf2ba8401553bd1946e3b388cb662eac58ee9",
+    "width": 1536,
+    "height": 1024,
+    "variants": [
+      {
+        "src": "/images/generated/white-dogs/white-puppy-garden-d3ab2ca0-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/images/generated/white-dogs/white-puppy-garden-d3ab2ca0-768.webp",
+        "width": 768
+      },
+      {
+        "src": "/images/generated/white-dogs/white-puppy-garden-d3ab2ca0-1080.webp",
+        "width": 1080
+      },
+      {
+        "src": "/images/generated/white-dogs/white-puppy-garden-d3ab2ca0-1440.webp",
+        "width": 1440
+      },
+      {
+        "src": "/images/generated/white-dogs/white-puppy-garden-d3ab2ca0-1536.webp",
+        "width": 1536
       }
     ]
   }

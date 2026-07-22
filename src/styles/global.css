@@ -340,32 +340,177 @@ h2 {
 	align-content: start;
 }
 
-.gallery-image-link {
-	display: grid;
-	width: min(100%, var(--gallery-width));
+.gallery-image {
+	display: block;
+	width: auto;
 	margin: 0 auto;
 	background: transparent;
-	text-decoration: none;
-	place-items: center;
-	transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.gallery-image-link:hover {
-	opacity: 0.92;
-	transform: translateY(-2px);
-}
-
-.gallery-image-link img {
-	width: auto;
 	height: auto;
 	max-width: 100%;
 	max-height: min(74vh, 760px);
 	object-fit: contain;
 }
 
-.gallery-image-link img.gallery-image-landscape {
+.gallery-image.gallery-image-landscape {
 	width: 100%;
 	max-height: none;
+}
+
+.gallery-carousel {
+	position: relative;
+	outline: none;
+}
+
+.gallery-carousel:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 0.5rem;
+}
+
+.gallery-carousel-slide {
+	flex: 0 0 100%;
+	min-width: 0;
+	margin: 0;
+}
+
+.gallery-carousel-stage {
+	position: relative;
+	display: grid;
+	width: min(100%, var(--gallery-width));
+	margin: 0 auto;
+	aspect-ratio: var(--gallery-carousel-aspect-ratio, auto);
+}
+
+.gallery-carousel-viewport {
+	height: 100%;
+}
+
+.gallery-carousel-image-frame {
+	display: grid;
+	width: 100%;
+	height: 100%;
+	place-items: center;
+}
+
+.gallery-carousel[data-carousel-ready='true'] .gallery-carousel-viewport {
+	overflow: hidden;
+}
+
+.gallery-carousel[data-carousel-ready='true'] .gallery-carousel-slides {
+	display: flex;
+	height: 100%;
+	touch-action: pan-y pinch-zoom;
+}
+
+.gallery-carousel[data-carousel-ready='true'] .gallery-carousel-slide {
+	display: grid;
+	height: 100%;
+	align-content: start;
+}
+
+.gallery-carousel-image-frame .gallery-image.gallery-image-landscape {
+	width: 100%;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.gallery-carousel-image-frame .gallery-image:not(.gallery-image-landscape) {
+	width: auto;
+	height: 100%;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.gallery-carousel-button,
+.gallery-carousel-position {
+	display: none;
+}
+
+.gallery-carousel[data-carousel-ready='true'] .gallery-carousel-button,
+.gallery-carousel[data-carousel-ready='true'] .gallery-carousel-position {
+	display: grid;
+}
+
+.gallery-carousel-button {
+	position: absolute;
+	top: 50%;
+	z-index: 2;
+	width: 2.625rem;
+	height: 2.625rem;
+	padding: 0;
+	place-items: center;
+	border: 1px solid currentColor;
+	border-radius: 999px;
+	background: var(--section-background-color, var(--color-page));
+	box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 0.12);
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+	font-size: 2rem;
+	line-height: 1;
+	opacity: 0.88;
+	transform: translateY(-50%);
+}
+
+.gallery-carousel-button:hover:not(:disabled),
+.gallery-carousel-button:focus-visible:not(:disabled) {
+	background: currentColor;
+	color: var(--section-background-color, var(--color-page));
+	opacity: 1;
+}
+
+.gallery-carousel-button:disabled {
+	cursor: default;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.gallery-carousel-button-previous {
+	left: 0.75rem;
+}
+
+.gallery-carousel-button-next {
+	right: 0.75rem;
+}
+
+.gallery-carousel-position {
+	position: absolute;
+	right: 0.75rem;
+	bottom: 0.75rem;
+	z-index: 2;
+	min-width: 3.25rem;
+	min-height: 1.75rem;
+	place-items: center;
+	border: 1px solid currentColor;
+	background: var(--section-background-color, var(--color-page));
+	box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 0.12);
+	font-size: 0.85rem;
+	line-height: 1;
+	text-align: center;
+}
+
+.gallery-carousel-captions {
+	width: min(100%, var(--gallery-width));
+	margin: 0 auto;
+}
+
+.gallery-carousel-caption {
+	margin-bottom: 0;
+}
+
+.gallery-carousel[data-carousel-ready='true'] .gallery-carousel-captions {
+	display: grid;
+}
+
+.gallery-carousel[data-carousel-ready='true'] .gallery-carousel-caption {
+	grid-area: 1 / 1;
+	visibility: hidden;
+	pointer-events: none;
+}
+
+.gallery-carousel[data-carousel-ready='true'] .gallery-carousel-caption.is-active {
+	visibility: visible;
+	pointer-events: auto;
 }
 
 .gallery-meta {
@@ -479,6 +624,31 @@ h2 {
 
 	.gallery-item img {
 		max-height: min(68vh, 560px);
+	}
+
+	.gallery-carousel-stage {
+		aspect-ratio: auto;
+	}
+
+	.gallery-carousel-viewport {
+		width: 100%;
+		height: auto;
+		aspect-ratio: var(--gallery-carousel-aspect-ratio, auto);
+	}
+
+	.gallery-carousel[data-carousel-ready='true'] .gallery-carousel-button {
+		display: none;
+	}
+
+	.gallery-carousel-position {
+		position: absolute;
+		right: 0.5rem;
+		bottom: 0.5rem;
+		min-width: 3rem;
+		min-height: 1.5rem;
+		box-shadow: 0 0.2rem 0.75rem rgb(0 0 0 / 0.1);
+		font-size: 0.78rem;
+		opacity: 0.88;
 	}
 
 	.gallery {

@@ -42,16 +42,28 @@ export const getFrontmatterSections = (frontmatter) => {
 
 		const sectionMatch = line.match(/^\s{2}-\s+id:\s*([a-z0-9-]+)\s*$/);
 		if (sectionMatch) {
-			currentSection = { id: sectionMatch[1], images: [], imageReferences: [] };
+			currentSection = { id: sectionMatch[1], images: [], imageReferences: [], carousels: [] };
 			sections.push(currentSection);
 			continue;
 		}
 
-		const imageMatch = line.match(/^\s{6}-\s+image:\s*["']?([^"'\n]+)["']?\s*$/);
+		const carouselMatch = line.match(/^\s{6}-\s+carousel:\s*$/);
+		if (carouselMatch && currentSection) {
+			currentSection.carousels.push({ images: [], imageReferences: [], line: index + 1 });
+			continue;
+		}
+
+		const imageMatch = line.match(/^\s{6,}-\s+image:\s*["']?([^"'\n]+)["']?\s*$/);
 		if (imageMatch && currentSection) {
 			const image = imageMatch[1].trim();
+			const isCarouselImage = /^\s{10}-\s+image:/.test(line);
+			const carousel = isCarouselImage ? currentSection.carousels.at(-1) : null;
 			currentSection.images.push(image);
 			currentSection.imageReferences.push({ image, line: index + 1 });
+			if (carousel) {
+				carousel.images.push(image);
+				carousel.imageReferences.push({ image, line: index + 1 });
+			}
 		}
 	}
 

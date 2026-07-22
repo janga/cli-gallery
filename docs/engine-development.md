@@ -75,6 +75,23 @@ same npm version.
 `npm run test:ci-lockfile` recreates and repairs the optional npm peer-dependency
 case that previously caused GitHub Actions `npm ci` failures.
 
+## Test The Package In A Site Repository
+
+> **Warning:** `npm link` is not supported for `cli-gallery`. Astro resolves
+> renderer modules and runtime dependencies differently when the package is a
+> symlink, so a linked site can fail to start even though the published package
+> works. Do not use `npm link @janga/cli-gallery` to test a site.
+
+Use `npm run package:check` to test the package before release. To test a
+specific published engine version in a real site, update it with:
+
+```sh
+cli-gallery engine:update <version>
+```
+
+Commit the resulting `package.json` and `package-lock.json` changes in the
+site repository after the site's normal checks pass.
+
 ## npm Release
 
 The npm package is published under the `@janga` scope. Choose the release type

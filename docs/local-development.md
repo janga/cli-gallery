@@ -24,6 +24,19 @@ localhost:4321
 If the port is already in use, the command fails and asks you to stop the
 process using it.
 
+## Test On A Phone
+
+To make the local dev server available to devices on the same Wi-Fi network:
+
+```sh
+npm run dev:lan
+```
+
+The command prints one or more local IPv4 URLs. Open one of them on the phone.
+The phone and computer must use the same network, and macOS may ask to allow
+incoming connections for Node. Stop the server after testing with
+`npm run dev:stop` because it is accessible from the local network.
+
 ## Manage Preview
 
 ```sh

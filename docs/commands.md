@@ -7,6 +7,7 @@ scripts are thin aliases around these commands.
 
 ```sh
 cli-gallery dev:local
+cli-gallery dev:lan
 cli-gallery dev:restart
 cli-gallery dev:status
 cli-gallery dev:logs
@@ -46,6 +47,7 @@ The starter defines:
 ```sh
 npm run dev
 npm run dev:local
+npm run dev:lan
 npm run dev:restart
 npm run dev:status
 npm run dev:logs
@@ -100,6 +102,9 @@ npm run preview
   Astro build.
 - `build:local`: runs `build` and restarts `dev:local`.
 - `dev:local`: starts Astro dev in background mode on `localhost:4321`.
+- `dev:lan`: starts the same server on all local network interfaces and prints
+  the IPv4 URL to open from another device on the same network. Stop it after
+  testing because it is accessible to that local network.
 - `dev:restart`, `dev:status`, `dev:logs`, `dev:stop`: manage the local dev
   server tracked under `.astro/`.
 - `preview`: runs Astro preview with the `cli-gallery` Astro config.

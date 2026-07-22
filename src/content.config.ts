@@ -51,7 +51,11 @@ const galleryImage = z.object({
 	image: contentImageName,
 	alt: z.string(),
 	caption: z.string().optional(),
-});
+}).strict();
+const galleryCarousel = z.object({
+	carousel: z.array(galleryImage).min(2, 'A carousel must contain at least two images.'),
+}).strict();
+const galleryItem = z.union([galleryImage, galleryCarousel]);
 
 const siteSchema = z.object({
 	title: z.string(),
@@ -61,7 +65,7 @@ const siteSchema = z.object({
 		z.object({
 			id: z.string().regex(/^[a-z0-9-]+$/),
 			presentation: sectionPresentationOverride.optional(),
-			gallery: z.array(galleryImage).optional().default([]),
+			gallery: z.array(galleryItem).optional().default([]),
 		}).strict(),
 	).min(1),
 });

@@ -1,51 +1,207 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { getGeneratedImage, getImageAttributes, getLinkedImageSrc } from '../lib/generatedImages';
+import { getGeneratedImage, getImageAttributes } from '../lib/generatedImages';
 
 type SiteSection = CollectionEntry<'site'>['data']['sections'][number];
-type GalleryImage = SiteSection['gallery'][number];
+type GalleryItem = SiteSection['gallery'][number];
+type GalleryImage = Extract<GalleryItem, { image: string }>;
 
 interface Props {
 	title: string;
-	images: GalleryImage[];
+	items: GalleryItem[];
 	priorityFirstImage?: boolean;
 }
 
-const { title, images, priorityFirstImage = false } = Astro.props;
+const { title, items, priorityFirstImage = false } = Astro.props;
 const galleryImageSizes = '(max-width: 700px) calc(100vw - 2rem), 880px';
+const getImageClass = (image: GalleryImage) => {
+	const generatedImage = getGeneratedImage(image.image);
+	return generatedImage && generatedImage.width > generatedImage.height
+		? 'gallery-image-landscape'
+		: undefined;
+};
+const getImageLoadingProps = (isPriority: boolean) => ({
+	decoding: 'async' as const,
+	fetchpriority: isPriority ? 'high' as const : 'low' as const,
+	loading: isPriority ? 'eager' as const : 'lazy' as const,
+});
+const getCarouselAspectRatio = (images: GalleryImage[]) => {
+	const ratios = images
+		.map((image) => getGeneratedImage(image.image))
+		.filter((image): image is NonNullable<typeof image> => Boolean(image))
+		.map((image) => image.width / image.height);
+
+	return ratios.length > 0 ? Math.min(...ratios) : null;
+};
 ---
 
 <div class="gallery" aria-label={`Galleri: ${title}`}>
-	{images.map((image, index) => {
-		const isPriority = priorityFirstImage && index === 0;
-		const generatedImage = getGeneratedImage(image.image);
-		const imageClass = generatedImage && generatedImage.width > generatedImage.height
-			? 'gallery-image-landscape'
+	{items.map((item, itemIndex) => {
+		const isPriorityItem = priorityFirstImage && itemIndex === 0;
+
+		if ('image' in item) {
+			return (
+				<figure class="gallery-item">
+					<img
+						{...getImageAttributes(item.image, galleryImageSizes)}
+						class:list={['gallery-image', getImageClass(item)]}
+						alt={item.alt}
+						{...getImageLoadingProps(isPriorityItem)}
+					/>
+					{item.caption && <figcaption class="gallery-meta">{item.caption}</figcaption>}
+				</figure>
+			);
+		}
+
+		const carouselAspectRatio = getCarouselAspectRatio(item.carousel);
+		const carouselStyle = carouselAspectRatio
+			? `--gallery-carousel-aspect-ratio: ${carouselAspectRatio}`
 			: undefined;
 
 		return (
-		<article class="gallery-item">
-			<a
-				href={getLinkedImageSrc(image.image)}
-				class="gallery-image-link"
+			<section
+				class="gallery-item gallery-carousel"
+				data-carousel
+				tabindex="0"
+				role="group"
+				aria-roledescription="carousel"
+				aria-label={`${title}, bildkarusell`}
+				style={carouselStyle}
 			>
-				<img
-					{...getImageAttributes(image.image, galleryImageSizes)}
-					class:list={[imageClass]}
-					alt={image.alt}
-					decoding="async"
-					fetchpriority={isPriority ? 'high' : 'low'}
-					loading={isPriority ? 'eager' : 'lazy'}
-				/>
-			</a>
-			{image.caption && (
-				<div class="gallery-meta">
-					<div class="gallery-details">
-						<span>{image.caption}</span>
+				<div class="gallery-carousel-stage">
+					<div class="gallery-carousel-viewport" data-carousel-viewport>
+						<div class="gallery-carousel-slides">
+							{item.carousel.map((image, imageIndex) => (
+								<figure class="gallery-carousel-slide" data-carousel-slide>
+									<div class="gallery-carousel-image-frame">
+										<img
+											{...getImageAttributes(image.image, galleryImageSizes)}
+											class:list={['gallery-image', getImageClass(image)]}
+											alt={image.alt}
+											{...getImageLoadingProps(isPriorityItem && imageIndex === 0)}
+										/>
+									</div>
+								</figure>
+							))}
+						</div>
 					</div>
+					<button
+						class="gallery-carousel-button gallery-carousel-button-previous"
+						type="button"
+						data-carousel-previous
+						aria-label="Föregående bild"
+						title="Föregående bild"
+					>
+						<span aria-hidden="true">‹</span>
+					</button>
+					<button
+						class="gallery-carousel-button gallery-carousel-button-next"
+						type="button"
+						data-carousel-next
+						aria-label="Nästa bild"
+						title="Nästa bild"
+					>
+						<span aria-hidden="true">›</span>
+					</button>
+					<output class="gallery-carousel-position" data-carousel-position aria-live="polite">
+						1 / {item.carousel.length}
+					</output>
 				</div>
-			)}
-		</article>
+				<div class="gallery-carousel-captions" data-carousel-captions>
+					{item.carousel.map((image, imageIndex) => (
+						image.caption && (
+							<p
+								class="gallery-meta gallery-carousel-caption"
+								data-carousel-caption
+								data-carousel-caption-index={imageIndex}
+							>
+								{image.caption}
+							</p>
+						)
+					))}
+				</div>
+			</section>
 		);
 	})}
 </div>
+
+<script>
+	import EmblaCarousel from 'embla-carousel';
+
+	const carouselSelector = '[data-carousel]';
+
+	const initializeCarousel = (carousel: HTMLElement) => {
+		const viewport = carousel.querySelector<HTMLElement>('[data-carousel-viewport]');
+		const previous = carousel.querySelector<HTMLButtonElement>('[data-carousel-previous]');
+		const next = carousel.querySelector<HTMLButtonElement>('[data-carousel-next]');
+		const position = carousel.querySelector<HTMLOutputElement>('[data-carousel-position]');
+		const captions = Array.from(carousel.querySelectorAll<HTMLElement>('[data-carousel-caption]'));
+		const slides = Array.from(carousel.querySelectorAll<HTMLElement>('[data-carousel-slide]'));
+		if (!viewport || !previous || !next || !position || slides.length < 2) return;
+
+		let controlsTimeout: number | undefined;
+		const showControls = () => {
+			carousel.classList.add('is-interacting');
+			window.clearTimeout(controlsTimeout);
+			controlsTimeout = window.setTimeout(() => {
+				carousel.classList.remove('is-interacting');
+			}, 1600);
+		};
+
+		carousel.dataset.carouselReady = 'true';
+
+		const embla = EmblaCarousel(viewport, {
+			align: 'start',
+			containScroll: false,
+			loop: true,
+		});
+
+		const update = () => {
+			const activeIndex = embla.selectedScrollSnap();
+			slides.forEach((slide, index) => {
+				const isSelected = index === activeIndex;
+				slide.classList.toggle('is-active', isSelected);
+				slide.setAttribute('aria-hidden', String(!isSelected));
+			});
+			captions.forEach((caption) => {
+				const isSelected = Number(caption.dataset.carouselCaptionIndex) === activeIndex;
+				caption.classList.toggle('is-active', isSelected);
+				caption.setAttribute('aria-hidden', String(!isSelected));
+			});
+			previous.disabled = false;
+			next.disabled = false;
+			position.textContent = `${activeIndex + 1} / ${slides.length}`;
+		};
+
+		previous.addEventListener('click', () => {
+			showControls();
+			embla.scrollPrev();
+		});
+		next.addEventListener('click', () => {
+			showControls();
+			embla.scrollNext();
+		});
+		carousel.addEventListener('focusin', showControls);
+		carousel.addEventListener('pointerdown', showControls);
+		carousel.addEventListener('keydown', (event) => {
+			if (event.key === 'ArrowLeft') {
+				event.preventDefault();
+				showControls();
+				embla.scrollPrev();
+			}
+			if (event.key === 'ArrowRight') {
+				event.preventDefault();
+				showControls();
+				embla.scrollNext();
+			}
+		});
+		embla.on('select', () => {
+			showControls();
+			update();
+		});
+		embla.on('reInit', update);
+		update();
+	};
+
+	document.querySelectorAll<HTMLElement>(carouselSelector).forEach(initializeCarousel);
+</script>

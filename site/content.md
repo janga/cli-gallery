@@ -20,9 +20,9 @@ sections:
       - image: photo-of-a-black-dog.jpg
         alt: "A black dog sitting outdoors and looking at the camera."
         caption: "Photo of a dog. ContaDeletada2906, CC0 1.0, via Wikimedia Commons."
-      - image: smiling-black-dog.jpg
-        alt: "A black dog in sunlight looking toward the camera with its mouth open."
-        caption: "Smiling dog. Brandon Weeks, public domain, via Wikimedia Commons."
+      - image: black-puppy-meadow.png
+        alt: "A black puppy standing in a grassy meadow and looking at the camera."
+        caption: "AI-generated image."
   - id: brown-dogs
     gallery:
       - image: brown-dog.jpg
@@ -41,9 +41,13 @@ sections:
         caption: "Nova Scotia Duck Tolling Retriever puppy. RM, public domain, via Wikimedia Commons."
   - id: white-dogs
     gallery:
-      - image: white-cute-dog.jpg
-        alt: "A white dog looking toward the camera."
-        caption: "White cute dog. Neal Ziring, public domain, via Wikimedia Commons."
+      - carousel:
+          - image: white-cute-dog.jpg
+            alt: "A white dog looking toward the camera."
+            caption: "White cute dog. Neal Ziring, public domain, via Wikimedia Commons."
+          - image: white-puppy-garden.png
+            alt: "A fluffy white puppy standing on grass in a garden."
+            caption: "AI-generated image."
   - id: sources
     presentation:
       backgroundColor: "#1f2620"
@@ -67,7 +71,7 @@ A white dog completes the colour-based gallery sequence.
 
 ## Sources {#sources}
 
-These images are sourced from Wikimedia Commons pages that list CC0 or public-domain licensing:
+Most images are sourced from Wikimedia Commons pages that list CC0 or public-domain licensing:
 
 - [Photo of a dog](https://commons.wikimedia.org/wiki/File:Photo_of_a_dog.jpg)
 - [Smiling dog](https://commons.wikimedia.org/wiki/File:Smiling_dog.jpg)
@@ -76,3 +80,5 @@ These images are sourced from Wikimedia Commons pages that list CC0 or public-do
 - [Golden Retriever](https://commons.wikimedia.org/wiki/File:Golden_Retriever.jpg)
 - [Toller pup7wks2](https://commons.wikimedia.org/wiki/File:Toller_pup7wks2.JPG)
 - [White cute dog](https://commons.wikimedia.org/wiki/File:White_cute_dog.jpg)
+
+The black and white puppy images are AI-generated.

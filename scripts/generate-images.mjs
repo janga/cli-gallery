@@ -163,6 +163,31 @@ const getReferencedSources = async () => {
 	return sources.sort();
 };
 
+const getOrientation = ({ width, height }) => {
+	if (width === height) return 'square';
+	return width > height ? 'landscape' : 'portrait';
+};
+
+const validateCarouselOrientations = (sections, manifest) => {
+	for (const section of sections) {
+		for (const carousel of section.carousels) {
+			const orientations = new Set(
+				carousel.images
+					.map((image) => manifest[image])
+					.filter(Boolean)
+					.map(getOrientation)
+			);
+
+			orientations.delete('square');
+			if (orientations.size > 1) {
+				throw new Error(
+					`Carousel in section "${section.id}" on line ${carousel.line} mixes landscape and portrait images. Use landscape images with optional square images, or portrait images with optional square images.`,
+				);
+			}
+		}
+	}
+};
+
 const identify = async (sourcePath) => {
 	const output = await imageMagick.identify(sourcePath);
 	const [width, height] = output.split(' ').map(Number);
@@ -289,6 +314,8 @@ const removeUnreferencedGeneratedFiles = async (manifest) => {
 await rm(originalImagesDir, { recursive: true, force: true });
 await mkdir(generatedImagesDir, { recursive: true });
 
+const { frontmatter } = await readSiteFile(siteContentPath);
+const frontmatterSections = getFrontmatterSections(frontmatter);
 const sources = await getReferencedSources();
 const previousManifest = await readManifest();
 const manifest = {};
@@ -329,6 +356,7 @@ for (const sourcePath of sources) {
 	};
 }
 
+validateCarouselOrientations(frontmatterSections, manifest);
 await removeUnreferencedGeneratedFiles(manifest);
 await mkdir(path.dirname(generatedImagesManifestPath), { recursive: true });
 await writeFile(generatedImagesManifestPath, `${JSON.stringify(manifest, null, 2)}\n`);

@@ -1,6 +1,7 @@
 import { execFile, spawn } from 'node:child_process';
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import net from 'node:net';
+import { networkInterfaces } from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { getAstroArgs, runAstroInherit } from './lib/astro-command.mjs';
@@ -8,10 +9,10 @@ import { astroCacheDir, engineRoot, siteProjectRoot } from './lib/site-paths.mjs
 
 const execFileAsync = promisify(execFile);
 
-const host = 'localhost';
 const port = 4321;
-const url = `http://${host}:${port}/`;
-const probeUrls = [url, `http://127.0.0.1:${port}/`, `http://[::1]:${port}/`];
+const localHost = 'localhost';
+const localUrl = `http://${localHost}:${port}/`;
+const probeUrls = [localUrl, `http://127.0.0.1:${port}/`, `http://[::1]:${port}/`];
 const skipOpen = process.env.WALDE_NO_OPEN === '1';
 const statePath = path.join(astroCacheDir, 'dev-local.json');
 const logPath = path.join(astroCacheDir, 'dev.log');
@@ -53,12 +54,19 @@ const readState = async () => {
 	}
 };
 
-const writeState = async (pid) => {
+const getLanUrls = () => Object.values(networkInterfaces())
+	.flat()
+	.filter((network) => network?.family === 'IPv4' && !network.internal)
+	.map((network) => `http://${network.address}:${port}/`);
+
+const writeState = async (pid, host) => {
 	await mkdir(path.dirname(statePath), { recursive: true });
 	await writeFile(statePath, `${JSON.stringify({
 		pid,
 		port,
-		url,
+		host,
+		mode: host === '0.0.0.0' ? 'lan' : 'local',
+		url: localUrl,
 		startedAt: new Date().toISOString(),
 	}, null, 2)}\n`);
 };
@@ -129,7 +137,7 @@ const waitForServer = async () => {
 		await sleep(500);
 	}
 
-	throw new Error(`Timed out waiting for ${url}`);
+	throw new Error(`Timed out waiting for ${localUrl}`);
 };
 
 const waitForPidToStopListening = async (pid) => {
@@ -149,21 +157,21 @@ const waitForPidToStopListening = async (pid) => {
 
 const openBrowser = async () => {
 	if (skipOpen) {
-		console.log(`Browser open skipped. Open ${url}`);
+		console.log(`Browser open skipped. Open ${localUrl}`);
 		return;
 	}
 
 	if (process.platform === 'darwin') {
-		await execFileAsync('open', [url]);
+		await execFileAsync('open', [localUrl]);
 		return;
 	}
 
 	if (process.platform === 'win32') {
-		await execFileAsync('cmd', ['/c', 'start', '', url]);
+		await execFileAsync('cmd', ['/c', 'start', '', localUrl]);
 		return;
 	}
 
-	await execFileAsync('xdg-open', [url]);
+	await execFileAsync('xdg-open', [localUrl]);
 };
 
 const stopServer = async ({ quiet = false } = {}) => {
@@ -198,16 +206,16 @@ const stopServer = async ({ quiet = false } = {}) => {
 	await removeState();
 
 	if (!quiet) {
-		console.log(`Stopped dev:local server on ${url}.`);
+		console.log(`Stopped dev server on ${localUrl}.`);
 	}
 };
 
-const startServer = async ({ open = true } = {}) => {
+const startServer = async ({ host = localHost, open = true } = {}) => {
 	await stopServer({ quiet: true });
 
 	const existingPids = await getPortPids();
 	if (existingPids.length > 0 || !(await isPortFree())) {
-		throw new Error(`Port ${port} is already in use. Stop the process using it, then rerun npm run dev:local.`);
+		throw new Error(`Port ${port} is already in use. Stop the process using it, then rerun the dev command.`);
 	}
 
 	await syncSitePublic();
@@ -215,14 +223,20 @@ const startServer = async ({ open = true } = {}) => {
 	await waitForServer();
 
 	const startedPids = await getPortPids();
-	await writeState(startedPids[0] ?? null);
+	await writeState(startedPids[0] ?? null, host);
 	if (open) {
 		await openBrowser();
 	} else {
-		console.log(`Browser open skipped. Open ${url}`);
+		console.log(`Browser open skipped. Open ${localUrl}`);
 	}
 
-	console.log(`Astro dev server is running at ${url}`);
+	console.log(`Astro dev server is running at ${localUrl}`);
+	if (host === '0.0.0.0') {
+		const lanUrls = getLanUrls();
+		console.log(lanUrls.length > 0
+			? `On this local network: ${lanUrls.join(', ')}`
+			: 'No local IPv4 address was found for LAN access.');
+	}
 	console.log('Manage it with npm run dev:status, npm run dev:logs, npm run dev:restart, and npm run dev:stop.');
 };
 
@@ -233,7 +247,11 @@ const showStatus = async () => {
 
 	if (state?.pid && listeningPids.includes(state.pid)) {
 		const reachability = reachable ? '' : ' The listener is active, but the URL probe did not respond.';
-		console.log(`dev:local is running at ${url} (pid ${state.pid}).${reachability}`);
+		console.log(`dev:${state.mode ?? 'local'} is running at ${localUrl} (pid ${state.pid}).${reachability}`);
+		if (state.host === '0.0.0.0') {
+			const lanUrls = getLanUrls();
+			if (lanUrls.length > 0) console.log(`On this local network: ${lanUrls.join(', ')}`);
+		}
 		return;
 	}
 
@@ -241,7 +259,7 @@ const showStatus = async () => {
 		const detail = state?.pid
 			? `the tracked pid ${state.pid} is not listening`
 			: 'no dev:local state file was found';
-		console.log(`A server is responding at ${url}, but ${detail}.`);
+		console.log(`A server is responding at ${localUrl}, but ${detail}.`);
 		return;
 	}
 
@@ -249,7 +267,7 @@ const showStatus = async () => {
 		await removeState();
 	}
 
-	console.log(`No dev:local server is running at ${url}.`);
+	console.log(`No dev server is running at ${localUrl}.`);
 };
 
 const showLogs = async () => {
@@ -279,12 +297,15 @@ const showLogs = async () => {
 
 if (command === 'start') {
 	await startServer({ open: !skipOpen });
+} else if (command === 'lan') {
+	await startServer({ host: '0.0.0.0', open: !skipOpen });
 } else if (command === 'status') {
 	await showStatus();
 } else if (command === 'logs') {
 	await showLogs();
 } else if (command === 'restart') {
-	await startServer({ open: false });
+	const state = await readState();
+	await startServer({ host: state?.host === '0.0.0.0' ? '0.0.0.0' : localHost, open: false });
 } else if (command === 'stop') {
 	await stopServer();
 } else {

@@ -32,6 +32,16 @@ const writeFixtureFile = async (root, relativePath, contents = 'fixture image') 
 	await writeFile(filePath, contents);
 };
 
+const makePngHeader = ({ width, height }) => {
+	const buffer = Buffer.alloc(24);
+	Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).copy(buffer, 0);
+	buffer.writeUInt32BE(13, 8);
+	buffer.write('IHDR', 12, 'ascii');
+	buffer.writeUInt32BE(width, 16);
+	buffer.writeUInt32BE(height, 20);
+	return buffer;
+};
+
 const withTempProject = async ({ site, files, siteDirectory = 'site' }, run) => {
 	const root = await mkdtemp(path.join(tmpdir(), 'walde-content-check-'));
 
@@ -39,7 +49,11 @@ const withTempProject = async ({ site, files, siteDirectory = 'site' }, run) => 
 		await writeFixtureFile(root, `${siteDirectory}/content.md`, site);
 
 		for (const file of files) {
-			await writeFixtureFile(root, file);
+			if (typeof file === 'string') {
+				await writeFixtureFile(root, file);
+			} else {
+				await writeFixtureFile(root, file.path, file.contents);
+			}
 		}
 
 		await run(root);
@@ -98,6 +112,43 @@ test('content:check groups section issues, global issues, and unreferenced image
 		assert.match(output, /Global Content Issues\n\nWarnings:\n- Markdown section order differs from frontmatter\./);
 		assert.match(output, /Unreferenced Images\nThese files are kept in site\/images\/ but are not mounted on the site:/);
 		assert.match(output, /site\/images\/karin-walde\/unreferenced\.jpg/);
+	});
+});
+
+const carouselAspectRatioSite = `---
+sections:
+  - id: puppies
+    gallery:
+      - carousel:
+          - image: wide.png
+          - image: wider.png
+
+---
+## Puppies {#puppies}
+Text.
+`;
+
+test('content:check warns when carousel images use different aspect ratios', async () => {
+	await withTempProject({
+		site: carouselAspectRatioSite,
+		files: [
+			{
+				path: 'site/images/puppies/wide.png',
+				contents: makePngHeader({ width: 400, height: 300 }),
+			},
+			{
+				path: 'site/images/puppies/wider.png',
+				contents: makePngHeader({ width: 600, height: 300 }),
+			},
+		],
+	}, async (root) => {
+		const result = runContentScript(root, ['--check']);
+		const output = getOutput(result);
+
+		assert.equal(result.status, 0, output);
+		assert.match(output, /^Content check completed with warnings\./m);
+		assert.match(output, /Carousel on line 5 uses images with different aspect ratios: wide\.png \(4:3\), wider\.png \(2:1\)\./);
+		assert.match(output, /Use images with exactly matching proportions in the same carousel/);
 	});
 });
 

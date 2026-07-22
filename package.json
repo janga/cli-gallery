@@ -42,6 +42,7 @@
   "scripts": {
     "dev": "npm run dev:local",
     "dev:local": "npm run demo:dev",
+    "dev:lan": "node bin/cli-gallery.mjs dev:lan",
     "dev:restart": "node bin/cli-gallery.mjs dev:restart",
     "dev:status": "node bin/cli-gallery.mjs dev:status",
     "dev:logs": "node bin/cli-gallery.mjs dev:logs",
@@ -79,7 +80,8 @@
     "astro": "node bin/cli-gallery.mjs astro"
   },
   "dependencies": {
-    "astro": "^7.1.3"
+    "astro": "^7.1.3",
+    "embla-carousel": "^8.6.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1"

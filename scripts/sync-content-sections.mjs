@@ -9,6 +9,7 @@ import {
 	readSiteFile,
 	toPosixPath,
 } from './lib/site-content.mjs';
+import { readImageDimensions } from './lib/image-dimensions.mjs';
 import {
 	siteContentLabel,
 	siteContentPath,
@@ -88,6 +89,54 @@ const groupIssuesBySeverity = (groupedIssues) => [
 	label,
 	issues: groupedIssues.filter((issue) => issue.severity === severity),
 })).filter((group) => group.issues.length > 0);
+
+const getGreatestCommonDivisor = (left, right) => {
+	let a = Math.abs(left);
+	let b = Math.abs(right);
+
+	while (b !== 0) {
+		const next = a % b;
+		a = b;
+		b = next;
+	}
+
+	return a || 1;
+};
+
+const getAspectRatioLabel = ({ width, height }) => {
+	const divisor = getGreatestCommonDivisor(width, height);
+	return `${width / divisor}:${height / divisor}`;
+};
+
+const warnAboutCarouselAspectRatios = async () => {
+	for (const section of frontmatterSections) {
+		for (const carousel of section.carousels ?? []) {
+			const imagesWithRatios = [];
+
+			for (const { image } of carousel.imageReferences ?? []) {
+				const imagePath = imageIndex.get(image);
+				if (!imagePath) continue;
+
+				const dimensions = await readImageDimensions(imagePath).catch(() => null);
+				if (!dimensions) continue;
+
+				imagesWithRatios.push({
+					image,
+					ratio: getAspectRatioLabel(dimensions),
+				});
+			}
+
+			const ratios = new Set(imagesWithRatios.map(({ ratio }) => ratio));
+			if (ratios.size <= 1) continue;
+
+			addSectionIssue(section.id, {
+				severity: 'warning',
+				message: `Carousel on line ${carousel.line} uses images with different aspect ratios: ${imagesWithRatios.map(({ image, ratio }) => `${image} (${ratio})`).join(', ')}.`,
+				fix: 'Use images with exactly matching proportions in the same carousel to avoid uneven layout and motion.',
+			});
+		}
+	}
+};
 
 const formatIssue = (issue) => [
 	`- ${issue.message}`,
@@ -293,6 +342,8 @@ for (const section of frontmatterSections) {
 		}
 	}
 }
+
+await warnAboutCarouselAspectRatios();
 
 if (hasErrors()) {
 	printReport(shouldWrite ? 'Content sync failed.' : 'Content check failed.');

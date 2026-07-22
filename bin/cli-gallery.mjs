@@ -9,6 +9,7 @@ Usage: cli-gallery <command> [options]
 
 Commands:
   dev:local              Start local Astro dev server
+  dev:lan                Start dev server for this local network
   dev:restart            Restart local Astro dev server
   dev:status             Show local dev server status
   dev:logs               Show local dev server logs
@@ -110,6 +111,8 @@ const runBuild = () => runScript('scripts/build-site.mjs');
 try {
 	if (command === 'dev' || command === 'dev:local') {
 		await runScript('scripts/dev-local.mjs', rest);
+	} else if (command === 'dev:lan') {
+		await runScript('scripts/dev-local.mjs', ['lan', ...rest]);
 	} else if (command === 'dev:restart') {
 		await runScript('scripts/dev-local.mjs', ['restart', ...rest]);
 	} else if (command === 'dev:status') {

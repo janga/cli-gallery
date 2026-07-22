@@ -43,7 +43,9 @@ maintainer, put it in `README.md` instead of duplicating it here.
 
 ## Command Choices
 
-- Start the dev server with `npm run dev:local`. Manage it with
+
+- Start the dev server with `npm run dev:local`, or `npm run dev:lan` only when
+  testing on another device on the same local network. Manage it with
   `npm run dev:stop`, `npm run dev:restart`, `npm run dev:status`, and
   `npm run dev:logs`.
 - Run `npm run config:check` after changing `site/config.mjs` or config
