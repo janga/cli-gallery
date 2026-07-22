@@ -83,7 +83,8 @@ is centered, body text is centered on desktop and left-aligned on mobile, and
 body size is `medium`.
 
 Centered text uses narrower text widths. Left- or right-aligned heading and body
-text use the gallery width so text edges line up with gallery images.
+text use the calculated gallery layout width so text edges line up with gallery
+images after layout gutters and gallery limits are applied.
 Configured section backgrounds render as full-width horizontal bands while the
 section content keeps the normal page and gallery widths. The top spacing
 before the first heading, the spacing between sections, and the spacing after

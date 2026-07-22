@@ -126,8 +126,8 @@ const getAlignedTextWidth = (
 	align: ResponsiveValue<TextAlign>,
 	centeredWidth: string,
 ): ResponsiveValue<string> => ({
-	desktop: align.desktop === 'center' ? centeredWidth : 'var(--gallery-width)',
-	mobile: align.mobile === 'center' ? centeredWidth : 'var(--gallery-width)',
+	desktop: align.desktop === 'center' ? centeredWidth : 'var(--gallery-layout-width)',
+	mobile: align.mobile === 'center' ? centeredWidth : 'var(--gallery-layout-width)',
 });
 const headingWidth = getAlignedTextWidth(headingAlign, '760px');
 const bodyWidth = getAlignedTextWidth(bodyAlign, 'var(--text-width)');

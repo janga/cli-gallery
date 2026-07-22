@@ -56,8 +56,8 @@ Commit the generated `package-lock.json` after the first install.
 
 ## First Edits
 
-1. Edit `site/config.mjs` for the site's URL, typography, GitHub repository,
-   footer, and deploy settings.
+1. Edit `site/config.mjs` for the site's URL, layout, typography, GitHub
+   repository, footer, and deploy settings.
 2. Edit `site/content.md` for title, description, sections, text, gallery rows,
    alt text, and captions.
 3. Put source images under `site/images/<section-id>/`.
@@ -73,6 +73,13 @@ npm run build
 
 Read [Site Structure](site-structure.md), [Content](content.md), and
 [Configuration](configuration.md) before publishing a real site.
+
+To change the site's maximum page width, set `layout.pageWidth` in
+`site/config.mjs`. To change side margins, set `layout.gutter`. To change the
+maximum gallery width inside that page area, set `gallery.width`. To keep
+images within a comfortable viewport height, set
+`gallery.maxAvailableHeightPercent`. See [Configuration](configuration.md) for
+the accepted formats and default values.
 
 To change the site's font, set `typography.fontFamily` in `site/config.mjs`.
 See [`typography.fontFamily`](configuration.md#typographyfontfamily) for the

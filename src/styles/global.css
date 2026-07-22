@@ -19,6 +19,13 @@
 	--page-width: 1180px;
 	--text-width: 680px;
 	--gallery-width: 900px;
+	--gallery-max-available-width-desktop: 100%;
+	--gallery-max-available-width-mobile: 100%;
+	--gallery-max-available-width: var(--gallery-max-available-width-desktop);
+	--gallery-layout-width: min(var(--gallery-width), var(--gallery-max-available-width));
+	--gallery-max-image-height-desktop: 74svh;
+	--gallery-max-image-height-mobile: 68svh;
+	--gallery-max-image-height: var(--gallery-max-image-height-desktop);
 	--nav-top-safety-inset: 0px;
 
 	/* Avstand fran sticky navigationsrad till forsta sektionsrubriken. */
@@ -36,7 +43,9 @@
 	/* Avstand fran sista galleriobjektet eller textblocket till nasta sektion. */
 	--space-section-to-section: clamp(2.55rem, 4.2vw, 3.9rem);
 
-	--content-gutter: clamp(1.25rem, 4vw, 3rem);
+	--content-gutter-desktop: clamp(1.25rem, 4vw, 3rem);
+	--content-gutter-mobile: 1rem;
+	--content-gutter: var(--content-gutter-desktop);
 	--site-top-anchor-offset: 4.5rem;
 	color-scheme: dark;
 	scroll-behavior: smooth;
@@ -263,7 +272,7 @@ h2 {
 	color: inherit;
 	font-size: var(--section-heading-font-size-desktop, clamp(1.4rem, 3.1vw, 3.2rem));
 	font-weight: 400;
-	letter-spacing: 0.02em;
+	letter-spacing: 0;
 	line-height: 1.04;
 	text-transform: uppercase;
 	overflow-wrap: anywhere;
@@ -275,7 +284,7 @@ h2 {
 }
 
 .section-body {
-	width: min(100%, 980px);
+	width: 100%;
 	margin: 0 auto;
 	color: inherit;
 	font-family: var(--font-sans);
@@ -343,7 +352,7 @@ h2 {
 
 .gallery-image-frame {
 	display: grid;
-	width: min(100%, var(--gallery-width));
+	width: min(100%, var(--gallery-layout-width));
 	margin: 0 auto;
 	background: transparent;
 	place-items: center;
@@ -356,7 +365,7 @@ h2 {
 	background: transparent;
 	height: auto;
 	max-width: 100%;
-	max-height: min(74vh, 760px);
+	max-height: var(--gallery-max-image-height);
 	object-fit: contain;
 }
 
@@ -384,7 +393,8 @@ h2 {
 .gallery-carousel-stage {
 	position: relative;
 	display: grid;
-	width: min(100%, var(--gallery-width));
+	width: min(100%, var(--gallery-layout-width));
+	max-height: var(--gallery-max-image-height);
 	margin: 0 auto;
 	aspect-ratio: var(--gallery-carousel-aspect-ratio, auto);
 }
@@ -499,7 +509,7 @@ h2 {
 }
 
 .gallery-carousel-captions {
-	width: min(100%, var(--gallery-width));
+	width: min(100%, var(--gallery-layout-width));
 	margin: 0 auto;
 }
 
@@ -523,7 +533,7 @@ h2 {
 }
 
 .gallery-meta {
-	width: min(100%, var(--gallery-width));
+	width: min(100%, var(--gallery-layout-width));
 	margin: 0 auto;
 	font-size: 0.95rem;
 	text-align: center;
@@ -550,7 +560,9 @@ h2 {
 		--space-section-body-to-gallery: 1.25rem;
 		--space-gallery-item: 2.75rem;
 		--space-section-to-section: 2.25rem;
-		--content-gutter: 1rem;
+		--content-gutter: var(--content-gutter-mobile);
+		--gallery-max-available-width: var(--gallery-max-available-width-mobile);
+		--gallery-max-image-height: var(--gallery-max-image-height-mobile);
 		--site-top-anchor-offset: 6.25rem;
 	}
 
@@ -572,7 +584,7 @@ h2 {
 	}
 
 	.site-content {
-		width: min(calc(100% - 2rem), var(--page-width));
+		width: min(calc(100% - (var(--content-gutter) * 2)), var(--page-width));
 	}
 
 	.site-footer {
@@ -632,7 +644,7 @@ h2 {
 	}
 
 	.gallery-item img {
-		max-height: min(68vh, 560px);
+		max-height: var(--gallery-max-image-height);
 	}
 
 	.gallery-carousel-stage {

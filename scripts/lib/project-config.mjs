@@ -3,6 +3,10 @@ import { siteConfigLabel, siteConfigPath } from './site-paths.mjs';
 
 const { default: siteConfig } = await import(/* @vite-ignore */ pathToFileURL(siteConfigPath).href);
 
+const cssLengthPattern = String.raw`(?:\d+|\d*\.\d+)(?:px|rem|em|vw|vh|vmin|vmax|ch|%)`;
+const simpleCssLengthPattern = new RegExp(`^${cssLengthPattern}$`);
+const clampCssLengthPattern = new RegExp(`^clamp\\(\\s*${cssLengthPattern}\\s*,\\s*${cssLengthPattern}\\s*,\\s*${cssLengthPattern}\\s*\\)$`);
+
 const assertObject = (value, path) => {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) {
 		throw new Error(`${path} must be an object in ${siteConfigLabel}.`);
@@ -60,11 +64,76 @@ const readCssLength = (object, key, path, fallback) => {
 
 	const normalizedValue = value.trim();
 
-	if (!/^(?:\d+|\d*\.\d+)(?:px|rem|em|vw|vh|vmin|vmax|ch|%)$/.test(normalizedValue) || parseFloat(normalizedValue) <= 0) {
+	if (!simpleCssLengthPattern.test(normalizedValue) || parseFloat(normalizedValue) <= 0) {
 		throw new Error(`${path}.${key} must be a CSS length such as "900px", "56rem", or "90%" in ${siteConfigLabel}.`);
 	}
 
 	return normalizedValue;
+};
+
+const readCssLengthValue = (value, path) => {
+	if (typeof value !== 'string' || value.trim() === '') {
+		throw new Error(`${path} must be a non-empty CSS length in ${siteConfigLabel}.`);
+	}
+
+	const normalizedValue = value.trim();
+
+	if (
+		(!simpleCssLengthPattern.test(normalizedValue) && !clampCssLengthPattern.test(normalizedValue))
+		|| parseFloat(normalizedValue) <= 0
+	) {
+		throw new Error(`${path} must be a CSS length such as "48px", "3rem", "4vw", or a clamp() of those lengths in ${siteConfigLabel}.`);
+	}
+
+	return normalizedValue;
+};
+
+const readResponsiveCssLength = (object, key, path, fallback) => {
+	const value = object[key] ?? fallback;
+
+	if (typeof value === 'string') {
+		const length = readCssLengthValue(value, `${path}.${key}`);
+
+		return Object.freeze({
+			desktop: length,
+			mobile: length,
+		});
+	}
+
+	const responsiveValue = assertObject(value, `${path}.${key}`);
+
+	return Object.freeze({
+		desktop: readCssLengthValue(responsiveValue.desktop ?? fallback.desktop, `${path}.${key}.desktop`),
+		mobile: readCssLengthValue(responsiveValue.mobile ?? fallback.mobile, `${path}.${key}.mobile`),
+	});
+};
+
+const readPercentValue = (value, path) => {
+	if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0 || value > 100) {
+		throw new Error(`${path} must be a number greater than 0 and less than or equal to 100 in ${siteConfigLabel}.`);
+	}
+
+	return value;
+};
+
+const readResponsivePercent = (object, key, path, fallback) => {
+	const value = object[key] ?? fallback;
+
+	if (typeof value === 'number') {
+		const percent = readPercentValue(value, `${path}.${key}`);
+
+		return Object.freeze({
+			desktop: percent,
+			mobile: percent,
+		});
+	}
+
+	const responsiveValue = assertObject(value, `${path}.${key}`);
+
+	return Object.freeze({
+		desktop: readPercentValue(responsiveValue.desktop ?? fallback.desktop, `${path}.${key}.desktop`),
+		mobile: readPercentValue(responsiveValue.mobile ?? fallback.mobile, `${path}.${key}.mobile`),
+	});
 };
 
 const readBoolean = (object, key, path, fallback) => {
@@ -168,6 +237,7 @@ const readBuildInfo = (footer) => {
 
 const rawConfig = assertObject(siteConfig, 'default export');
 const rawSite = assertObject(rawConfig.site, 'site');
+const rawLayout = assertObject(rawConfig.layout ?? {}, 'layout');
 const rawGallery = assertObject(rawConfig.gallery ?? {}, 'gallery');
 const rawTypography = assertObject(rawConfig.typography ?? {}, 'typography');
 const rawNavigation = assertObject(rawConfig.navigation ?? {}, 'navigation');
@@ -182,7 +252,22 @@ export const projectConfig = Object.freeze({
 	site: Object.freeze({
 		url: readUrl(rawSite, 'url', 'site'),
 	}),
+	layout: Object.freeze({
+		gutter: readResponsiveCssLength(rawLayout, 'gutter', 'layout', Object.freeze({
+			desktop: 'clamp(1.25rem, 4vw, 3rem)',
+			mobile: '1rem',
+		})),
+		pageWidth: readCssLength(rawLayout, 'pageWidth', 'layout', '1180px'),
+	}),
 	gallery: Object.freeze({
+		maxAvailableHeightPercent: readResponsivePercent(rawGallery, 'maxAvailableHeightPercent', 'gallery', Object.freeze({
+			desktop: 74,
+			mobile: 68,
+		})),
+		maxAvailableWidthPercent: readResponsivePercent(rawGallery, 'maxAvailableWidthPercent', 'gallery', Object.freeze({
+			desktop: 100,
+			mobile: 100,
+		})),
 		width: readCssLength(rawGallery, 'width', 'gallery', '900px'),
 	}),
 	typography: Object.freeze({

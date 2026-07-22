@@ -25,8 +25,9 @@ For a developer integrating or updating the engine:
 For a quick reference:
 
 - [Configuration](configuration.md) describes every supported
-  `site/config.mjs` field, including `typography.fontFamily`, validation rule,
-  and default.
+  `site/config.mjs` field, including `layout.pageWidth`, `layout.gutter`,
+  gallery viewport limits, `typography.fontFamily`, validation rule, and
+  default.
 - [Commands](commands.md) lists the public CLI surface and starter npm scripts.
 - [Site Structure](site-structure.md) separates versioned source files from
   generated build output.

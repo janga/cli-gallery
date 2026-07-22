@@ -20,10 +20,19 @@ const {
 const documentTitle = title;
 const canonicalUrl = projectConfig.site.url;
 const scrollBehavior = projectConfig.navigation.smoothScroll.enabled ? 'smooth' : 'auto';
+const formatPercent = (value: number) => `${value}%`;
+const formatViewportHeightPercent = (value: number) => `${value}svh`;
 const documentStyle = [
 	`scroll-behavior: ${scrollBehavior}`,
 	`--font-sans: ${projectConfig.typography.fontFamily}`,
+	`--page-width: ${projectConfig.layout.pageWidth}`,
+	`--content-gutter-desktop: ${projectConfig.layout.gutter.desktop}`,
+	`--content-gutter-mobile: ${projectConfig.layout.gutter.mobile}`,
 	`--gallery-width: ${projectConfig.gallery.width}`,
+	`--gallery-max-available-width-desktop: ${formatPercent(projectConfig.gallery.maxAvailableWidthPercent.desktop)}`,
+	`--gallery-max-available-width-mobile: ${formatPercent(projectConfig.gallery.maxAvailableWidthPercent.mobile)}`,
+	`--gallery-max-image-height-desktop: ${formatViewportHeightPercent(projectConfig.gallery.maxAvailableHeightPercent.desktop)}`,
+	`--gallery-max-image-height-mobile: ${formatViewportHeightPercent(projectConfig.gallery.maxAvailableHeightPercent.mobile)}`,
 ].join('; ');
 const { buildInfo, copyrightMessage } = projectConfig.footer;
 const showBuildInfo = Boolean(buildInfo?.enabled);

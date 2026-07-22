@@ -9,9 +9,14 @@ npm install
 npm run dev:local
 ```
 
-Edit site-specific content in `site/content.md`, technical settings such as URL
-and typography in `site/config.mjs`, source images under
+Edit site-specific content in `site/content.md`, technical settings such as URL,
+layout, and typography in `site/config.mjs`, source images under
 `site/images/<section-id>/`, and static public files under `site/public/`.
+
+The page width is configured with `layout.pageWidth`; gallery width is
+configured with `gallery.width`. Side margins are configured with
+`layout.gutter`; image height is limited with
+`gallery.maxAvailableHeightPercent`.
 
 The site font is configured with `typography.fontFamily` in `site/config.mjs`.
 

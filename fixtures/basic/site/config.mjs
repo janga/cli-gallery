@@ -2,6 +2,23 @@ export default {
 	site: {
 		url: 'https://example.com/',
 	},
+	layout: {
+		pageWidth: '1180px',
+		gutter: {
+			desktop: 'clamp(1.25rem, 4vw, 3rem)',
+			mobile: '1rem',
+		},
+	},
+	gallery: {
+		maxAvailableWidthPercent: {
+			desktop: 100,
+			mobile: 100,
+		},
+		maxAvailableHeightPercent: {
+			desktop: 74,
+			mobile: 68,
+		},
+	},
 	typography: {
 		fontFamily: "Arial, 'Helvetica Neue', Helvetica, sans-serif",
 	},

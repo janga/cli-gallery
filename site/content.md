@@ -2,13 +2,13 @@
 title: Local Dog Gallery
 description: A small cli-gallery example with free dog images.
 defaultPresentation:
-  backgroundColor: "#999999"
-  textColor: "#000000"
+  backgroundColor: "#000000"
+  textColor: "#ffffff"
   heading:
     align:
       desktop: left
       mobile: left
-    size: xlarge
+    size: medium
   body:
     align:
       desktop: left
@@ -16,6 +16,9 @@ defaultPresentation:
     size: medium
 sections:
   - id: black-dogs
+    presentation:
+      heading:
+        size: large
     gallery:
       - image: photo-of-a-black-dog.jpg
         alt: "A black dog sitting outdoors and looking at the camera."
@@ -50,7 +53,7 @@ sections:
             caption: "AI-generated image."
   - id: sources
     presentation:
-      backgroundColor: "#1f2620"
+      backgroundColor: "#000000"
 ---
 
 ## Black Dogs {#black-dogs}

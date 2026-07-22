@@ -5,9 +5,31 @@ export default {
 		// Public canonical URL for this site.
 		url: siteUrl,
 	},
+	layout: {
+		// Maximum width of the page content area.
+		pageWidth: '2048px',
+
+		// Side margin on desktop and mobile before available gallery width is calculated.
+		gutter: {
+			desktop: 'clamp(1.25rem, 4vw, 3rem)',
+			mobile: '16px',
+		},
+	},
 	gallery: {
-		// Maximum rendered gallery width for landscape images and aligned text.
-		width: '900px',
+		// Hard maximum rendered gallery width for images and aligned text.
+		width: '55vw',
+
+		// Maximum share of the available width after gutters.
+		maxAvailableWidthPercent: {
+			desktop: 100,
+			mobile: 100,
+		},
+
+		// Maximum share of viewport height used by gallery images.
+		maxAvailableHeightPercent: {
+			desktop: 74,
+			mobile: 68,
+		},
 	},
 	typography: {
 		// CSS font-family stack used by the whole site, including sticky navigation.
