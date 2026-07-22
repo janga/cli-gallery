@@ -338,6 +338,15 @@ h2 {
 	display: grid;
 	gap: 0.7rem;
 	align-content: start;
+	margin: 0;
+}
+
+.gallery-image-frame {
+	display: grid;
+	width: min(100%, var(--gallery-width));
+	margin: 0 auto;
+	background: transparent;
+	place-items: center;
 }
 
 .gallery-image {

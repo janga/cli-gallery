@@ -24,6 +24,8 @@ test-results/
 playwright-report/
 blob-report/
 
+# local scratch work
+todos/
 
 # environment variables
 .env

@@ -47,11 +47,17 @@ npm run package:check
 For a new site repository:
 
 ```sh
-npx @janga/cli-gallery@latest init ../my-gallery
-cd ../my-gallery
+cd ../
+npx @janga/cli-gallery@latest init my-gallery
+cd my-gallery
 npm install
 npm run dev:local
 ```
+
+Run `init` before `npm install`. A new site directory is not a Node project
+until the starter has created its `package.json`; running `npm install` in an
+empty directory can make npm use a parent project instead. Keep real site
+repositories next to this engine repository, not inside it.
 
 The starter pins `@janga/cli-gallery` to an exact npm version. Commit the
 generated `package-lock.json` in the site repository so local builds and GitHub

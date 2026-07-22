@@ -24,6 +24,10 @@ const starterRoot = path.join(engineRoot, 'starters', 'basic');
 const targetRoot = path.resolve(invocationRoot, targetDirectory);
 const enginePackageJsonPath = path.join(engineRoot, 'package.json');
 const targetPackageJsonPath = path.join(targetRoot, 'package.json');
+const isInsideEngineRoot = (candidatePath) => {
+	const relativePath = path.relative(engineRoot, candidatePath);
+	return relativePath && !relativePath.startsWith('..') && !path.isAbsolute(relativePath);
+};
 
 const readDirectoryEntries = async (directoryPath) => {
 	try {
@@ -55,6 +59,12 @@ targetPackageJson.dependencies['@janga/cli-gallery'] = enginePackageJson.version
 await writeFile(targetPackageJsonPath, `${JSON.stringify(targetPackageJson, null, 2)}\n`);
 
 console.log(`Created cli-gallery site at ${targetRoot}`);
+if (isInsideEngineRoot(targetRoot)) {
+	console.warn('');
+	console.warn('Warning: This site was created inside the cli-gallery engine repository.');
+	console.warn('For normal site projects, create the site next to the engine repository instead, for example as a sibling directory under your Projects folder.');
+	console.warn('That keeps site content, npm installs, commits, and releases separate from engine development.');
+}
 console.log('');
 console.log('Next steps:');
 console.log(`  cd ${targetRoot}`);

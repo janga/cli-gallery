@@ -18,13 +18,29 @@ npx playwright install chromium
 
 ## Create A Site Repository
 
-Create a site from the starter:
+Create the site from the starter first, then install dependencies inside the
+new site directory:
 
 ```sh
-npx @janga/cli-gallery@latest init ../my-gallery
-cd ../my-gallery
+cd path/to/your/projects
+npx @janga/cli-gallery@latest init my-gallery
+cd my-gallery
 npm install
 npm run dev:local
+```
+
+A freshly created empty directory is not a `cli-gallery` site yet. It becomes a
+site when `init` copies the starter files, including `package.json`. If you run
+`npm install` in an empty directory, npm may walk up to a parent directory and
+install dependencies for another project instead.
+
+For normal site work, keep site repositories as siblings of the `cli-gallery`
+engine repository. For example:
+
+```text
+Projects/
+  cli-gallery/
+  my-gallery/
 ```
 
 The starter contains:

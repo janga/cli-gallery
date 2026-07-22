@@ -42,13 +42,21 @@ const getCarouselAspectRatio = (images: GalleryImage[]) => {
 		if ('image' in item) {
 			return (
 				<figure class="gallery-item">
-					<img
-						{...getImageAttributes(item.image, galleryImageSizes)}
-						class:list={['gallery-image', getImageClass(item)]}
-						alt={item.alt}
-						{...getImageLoadingProps(isPriorityItem)}
-					/>
-					{item.caption && <figcaption class="gallery-meta">{item.caption}</figcaption>}
+					<div class="gallery-image-frame">
+						<img
+							{...getImageAttributes(item.image, galleryImageSizes)}
+							class:list={['gallery-image', getImageClass(item)]}
+							alt={item.alt}
+							{...getImageLoadingProps(isPriorityItem)}
+						/>
+					</div>
+					{item.caption && (
+						<figcaption class="gallery-meta">
+							<div class="gallery-details">
+								<span>{item.caption}</span>
+							</div>
+						</figcaption>
+					)}
 				</figure>
 			);
 		}
@@ -115,7 +123,9 @@ const getCarouselAspectRatio = (images: GalleryImage[]) => {
 								data-carousel-caption
 								data-carousel-caption-index={imageIndex}
 							>
-								{image.caption}
+								<span class="gallery-details">
+									<span>{image.caption}</span>
+								</span>
 							</p>
 						)
 					))}
